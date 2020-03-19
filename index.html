@@ -80,13 +80,14 @@
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     const CHAT_MESSAGE = 'chat-message';
+    const ERROR_MESSAGE = 'error-message';
     const INIT_USER = 'init-user';
     const CMD = 'cmd';
     const GENERAL_ROOM = 'generalRoom';
     
     $(function () {
       var socket = io();
-      const name = prompt('tell me your name');
+      const name = prompt('Tell me your name');
       socket.emit(INIT_USER, name);
       $('form').submit(function () {
         const message = $('#m').val();
@@ -98,8 +99,12 @@
         $('#m').val('');
         return false;
       });
-      socket.on('chat-message', function (msg) {
+      socket.on(CHAT_MESSAGE, function (msg) {
         $('#messages').append($('<li>').text(msg));
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      socket.on(ERROR_MESSAGE, function (msg) {
+        $('#messages').append($('<li>').html(`<b>${msg}</b>`));
         window.scrollTo(0, document.body.scrollHeight);
       });
     });
