@@ -2,40 +2,8 @@
 <html>
 
 <head>
-  <title>Socket.IO chat</title>
+  <title>PockerChatRoom</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font: 13px Helvetica, Arial;
-    }
-
-    form {
-      background: #000;
-      padding: 3px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-    form input {
-      border: 0;
-      padding: 10px;
-      width: 90%;
-      margin-right: .5%;
-    }
-
-    form button {
-      width: 9%;
-      background: rgb(130, 224, 255);
-      border: none;
-      padding: 10px;
-    }
-
     #messages {
       list-style-type: none;
       margin: 0;
@@ -53,7 +21,19 @@
     #messages {
       margin-bottom: 40px
     }
+
+    .frm {
+      display: flex;
+      margin-right: 2px;
+      margin-left: 4px;
+    }
   </style>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css" />
 </head>
 
 <body>
@@ -73,18 +53,24 @@
     </ul>
   </div>
   <ul id="messages"></ul>
-  <form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
+  <form action="" class="frm">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-textfield__input" type="text" id="m" autocomplete="off">
+      <label class="mdl-textfield__label" for="sample1">Write something...</label>
+    </div>
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+      <i class="material-icons">send</i>
+    </button>
   </form>
-  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     const CHAT_MESSAGE = 'chat-message';
+    const GAME_MESSAGE = 'game-message';
+    const PERSONAL_MESSAGE = 'personal-message';
     const ERROR_MESSAGE = 'error-message';
     const INIT_USER = 'init-user';
     const CMD = 'cmd';
     const GENERAL_ROOM = 'generalRoom';
-    
+
     $(function () {
       var socket = io();
       const name = prompt('Tell me your name');
@@ -105,6 +91,15 @@
       });
       socket.on(ERROR_MESSAGE, function (msg) {
         $('#messages').append($('<li>').html(`<b>${msg}</b>`));
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      socket.on(GAME_MESSAGE, function (msg) {
+        $('#messages').append($('<li>').html(`<i>${msg}</i>`));
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      socket.on(PERSONAL_MESSAGE, function (msg) {
+        console.log('yello')
+        $('#messages').append($('<li>').html(`<u>${msg}</u>`));
         window.scrollTo(0, document.body.scrollHeight);
       });
     });

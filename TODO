@@ -5,15 +5,16 @@
         This follows the following steps:
             Six players numbered from 1 to 6, where #2 is to the left of #1 at the table
             Starting round is
-            - #1 is the dealer
-            - #2 is the small blind (*sb*) bet
-            - #3 is the big blind (*bb*) bet
-            - *sb* and *bb* put the money on the table as initial amount
-            - #1 give 2 cards per player, #1 being the last
+            - #1 is the dealer ✔️
+            - #2 is the small blind (*sb*) bet ✔️
+            - #3 is the big blind (*bb*) bet ✔️
+            - *sb* and *bb* put the money on the table as initial amount ✔️
+            - #1 give 2 cards per player, #1 being the last ✔️
             - #4 is the first one to play one of the following actions:
                 - call: put the same money as the one before him
                 - fold: doesn't play anymore, doesn't recover any money played
                 - raise: call action plus at least 1 dollar more        
+                - all in: offer what you have        
             - #4 raise
             - #5 call
             - #6 call
