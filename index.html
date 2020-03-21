@@ -98,7 +98,6 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
       socket.on(PERSONAL_MESSAGE, function (msg) {
-        console.log('yello')
         $('#messages').append($('<li>').html(`<u>${msg}</u>`));
         window.scrollTo(0, document.body.scrollHeight);
       });

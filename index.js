@@ -2,6 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
+var debug = process.env.DEBUG || true;
+
 
 const CHAT_MESSAGE = 'chat-message';
 const PERSONAL_MESSAGE = 'personal-message';
@@ -77,8 +79,8 @@ function Game(owner, id) {
         comms.to(this.id).emit(GAME_MESSAGE, `Current pool prize is: ${this.plate}`)
         comms.to(this.id).emit(GAME_MESSAGE, `Dealing cards...`)
 
-        for(let i = 0; i < this.playerSize; i++ ) {
-          const handPlayer = this.players[(this.dealer+i)%this.playerSize];
+        for (let i = 0; i < this.playerSize; i++) {
+          const handPlayer = this.players[(this.dealer + i) % this.playerSize];
           handPlayer.hand = this.deck.drawTwoCards()
           comms.to(handPlayer.user.id).emit(PERSONAL_MESSAGE, `Your hand is ${handPlayer.hand[0]} and ${handPlayer.hand[1]}`)
         }
@@ -160,7 +162,11 @@ io.on('connection', function (socket) {
       }
     }
 
-    if (exec === '!debug') {
+    if (exec == '!bet') {
+      const amount = commandLine[1]
+    }
+
+    if (debug && exec === '!debug') {
       const currentRoom = Object.keys(socket.rooms)[0]
       socket.emit(CHAT_MESSAGE, 'currentRoom: ' + JSON.stringify(currentRoom))
       socket.emit(CHAT_MESSAGE, 'games: ' + JSON.stringify(games))
@@ -172,5 +178,6 @@ io.on('connection', function (socket) {
 });
 
 http.listen(port, function () {
-  console.log('listening on *:' + port);
+  console.log(`listening on *: ${port}`)
+  console.log(`debug is ${debug}`)
 });
