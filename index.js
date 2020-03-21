@@ -29,6 +29,7 @@ function Player(user, money) {
   return {
     user,
     money,
+    hasFolded: false,
   }
 }
 
@@ -43,6 +44,7 @@ function Game(owner, id) {
     smallBlind: 5,
     bigBlind: 10,
     playerSize: 0,
+    highestBet: 0,
     deck: {
       drawTwoCards() {
         return ['1', '2']
@@ -61,6 +63,20 @@ function Game(owner, id) {
       }
       return this.hasNotStartedYet
     },
+    raise(amount, user, comms) {
+      comms.to(user.id).emit(ERROR_MESSAGE, `not supported command !raise ${amount}`)
+    },
+    call(user, comms) {
+      comms.to(user.id).emit(ERROR_MESSAGE, 'not supported command !call')
+    },
+    fold(user, comms) {
+      comms.to(user.id).emit(ERROR_MESSAGE, 'not supported command !fold')
+      const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
+      currentPlayer.hasFolded = true
+      this.waitingPlayer += 1
+      comms.to(this.id).emit(GAME_MESSAGE, `Player ${user.name} has folded`)
+      comms.to(this.id).emit(GAME_MESSAGE, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
+    },
     bootstrapGame(userAsking, comms) {
       if (this.owner === userAsking) {
         this.hasNotStartedYet = false
@@ -74,6 +90,7 @@ function Game(owner, id) {
         this.players[(this.dealer + 2) % l].money -= this.bigBlind
         this.plate = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % l
+        this.highestBet = this.bigBlind
         comms.to(this.id).emit(GAME_MESSAGE, `The dealer is ${this.players[this.dealer].user.name}`)
         comms.to(this.id).emit(GAME_MESSAGE, `The small blind is ${this.players[smallBlind].user.name}`)
         comms.to(this.id).emit(GAME_MESSAGE, `The big blind is ${this.players[bigBlind].user.name}`)
@@ -164,17 +181,17 @@ io.on('connection', (socket) => {
     if (exec === '!raise') {
       const amount = parseInt(commandLine[1], 10)
       const currentGame = games[currentUser.room]
-      currentGame.raise(amount, currentUser)
+      currentGame.raise(amount, currentUser, io)
     }
 
     if (exec === '!call') {
       const currentGame = games[currentUser.room]
-      currentGame.call(currentUser)
+      currentGame.call(currentUser, io)
     }
 
     if (exec === '!fold') {
       const currentGame = games[currentUser.room]
-      currentGame.call(currentUser)
+      currentGame.fold(currentUser, io)
     }
 
     if (debug && exec === '!debug') {
