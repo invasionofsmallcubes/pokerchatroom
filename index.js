@@ -63,6 +63,10 @@ function Game(owner, id) {
       }
       return this.hasNotStartedYet
     },
+    isPlayerInTurn(user) {
+      const currentPlayer = this.players[this.waitingPlayer]
+      return user.id === currentPlayer.user.id
+    },
     raise(amount, user, comms) {
       comms.to(user.id).emit(ERROR_MESSAGE, `not supported command !raise ${amount}`)
     },
@@ -70,10 +74,9 @@ function Game(owner, id) {
       comms.to(user.id).emit(ERROR_MESSAGE, 'not supported command !call')
     },
     fold(user, comms) {
-      comms.to(user.id).emit(ERROR_MESSAGE, 'not supported command !fold')
       const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
       currentPlayer.hasFolded = true
-      this.waitingPlayer += 1
+      this.waitingPlayer = (this.waitingPlayer + 1) % this.playerSize
       comms.to(this.id).emit(GAME_MESSAGE, `Player ${user.name} has folded`)
       comms.to(this.id).emit(GAME_MESSAGE, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
     },
@@ -191,7 +194,11 @@ io.on('connection', (socket) => {
 
     if (exec === '!fold') {
       const currentGame = games[currentUser.room]
-      currentGame.fold(currentUser, io)
+      if (currentGame.isPlayerInTurn(currentUser)) {
+        currentGame.fold(currentUser, io)
+      } else {
+        socket.emit(ERROR_MESSAGE, 'You cannot !fold because it\'s not your turn')
+      }
     }
 
     if (debug && exec === '!debug') {
