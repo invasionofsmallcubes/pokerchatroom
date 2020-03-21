@@ -1,40 +1,41 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
-var debug = process.env.DEBUG || true;
+const app = require('express')()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
+
+const port = process.env.PORT || 3000
+const debug = process.env.DEBUG || true
 
 
-const CHAT_MESSAGE = 'chat-message';
-const PERSONAL_MESSAGE = 'personal-message';
-const GAME_MESSAGE = 'game-message';
-const ERROR_MESSAGE = 'error-message';
-const INIT_USER = 'init-user';
-const CMD = 'cmd';
-const GENERAL_ROOM = 'generalRoom';
+const CHAT_MESSAGE = 'chat-message'
+const PERSONAL_MESSAGE = 'personal-message'
+const GAME_MESSAGE = 'game-message'
+const ERROR_MESSAGE = 'error-message'
+const INIT_USER = 'init-user'
+const CMD = 'cmd'
+const GENERAL_ROOM = 'generalRoom'
 
-const users = {};
-const games = {};
+const users = {}
+const games = {}
 
 function User(name, room, id) {
   return {
-    name: name,
-    room: room,
-    id: id
+    name,
+    room,
+    id,
   }
 }
 
 function Player(user, money) {
   return {
-    user: user,
-    money: money
+    user,
+    money,
   }
 }
 
 function Game(owner, id) {
   return {
-    owner: owner,
-    id: id,
+    owner,
+    id,
     players: [],
     hasNotStartedYet: true,
     dealer: undefined,
@@ -43,26 +44,26 @@ function Game(owner, id) {
     bigBlind: 10,
     playerSize: 0,
     deck: {
-      drawTwoCards: function () {
+      drawTwoCards() {
         return ['1', '2']
       },
-      drawThreeCards: function () {
+      drawThreeCards() {
         return ['3', '4', '5']
       },
-      drawOneCard: function () {
+      drawOneCard() {
         return ['6']
       },
     },
-    addPlayer: function (user) {
+    addPlayer(user) {
       if (this.hasNotStartedYet) {
         this.players.push(Player(user, 100))
-        this.playerSize++
+        this.playerSize += 1
       }
       return this.hasNotStartedYet
     },
-    bootstrapGame: function (userAsking, comms) {
+    bootstrapGame(userAsking, comms) {
       if (this.owner === userAsking) {
-        this.hasNotStartedYet = false;
+        this.hasNotStartedYet = false
         comms.to(this.id).emit(GAME_MESSAGE, `Game in room ${this.id} has started by ${owner.name}`)
         this.round = 0
         const l = this.players.length
@@ -77,20 +78,19 @@ function Game(owner, id) {
         comms.to(this.id).emit(GAME_MESSAGE, `The small blind is ${this.players[smallBlind].user.name}`)
         comms.to(this.id).emit(GAME_MESSAGE, `The big blind is ${this.players[bigBlind].user.name}`)
         comms.to(this.id).emit(GAME_MESSAGE, `Current pool prize is: ${this.plate}`)
-        comms.to(this.id).emit(GAME_MESSAGE, `Dealing cards...`)
+        comms.to(this.id).emit(GAME_MESSAGE, 'Dealing cards...')
 
-        for (let i = 0; i < this.playerSize; i++) {
-          const handPlayer = this.players[(this.dealer + i) % this.playerSize];
+        for (let i = 0; i < this.playerSize; i += 1) {
+          const handPlayer = this.players[(this.dealer + i) % this.playerSize]
           handPlayer.hand = this.deck.drawTwoCards()
           comms.to(handPlayer.user.id).emit(PERSONAL_MESSAGE, `Your hand is ${handPlayer.hand[0]} and ${handPlayer.hand[1]}`)
         }
 
         comms.to(this.id).emit(GAME_MESSAGE, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
-        return true;
-      } else {
-        return false;
+        return true
       }
-    }
+      return false
+    },
   }
 }
 
@@ -99,17 +99,17 @@ function generate() {
 }
 
 function changeRoom(socket, roomId) {
-  socket.leave(GENERAL_ROOM);
-  socket.join(roomId);
-  const name = users[socket.id].name
+  socket.leave(GENERAL_ROOM)
+  socket.join(roomId)
+  const { name } = users[socket.id]
   delete users[socket.id]
   users[socket.id] = User(name, roomId, socket.id)
-  socket.emit(CHAT_MESSAGE, 'I will move you on the new room ' + roomId + '...');
+  socket.emit(CHAT_MESSAGE, `I will move you on the new room ${roomId}...`)
   return users[socket.id]
 }
 
 function addPlayerToGame(player, id) {
-  games[id].addPlayer(player);
+  games[id].addPlayer(player)
 }
 
 function createGame(owner, id) {
@@ -117,67 +117,79 @@ function createGame(owner, id) {
   addPlayerToGame(owner, id)
 }
 
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/index.html`)
+})
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
+  let currentUser
 
-  let currentUser = undefined
-
-  socket.on(INIT_USER, function (name) {
-    socket.join(GENERAL_ROOM);
+  socket.on(INIT_USER, (name) => {
+    socket.join(GENERAL_ROOM)
     users[socket.id] = User(name, GENERAL_ROOM, socket.id)
-    currentUser = users[socket.id];
-  });
+    currentUser = users[socket.id]
+  })
 
-  socket.on(CHAT_MESSAGE, function (msg) {
-    io.to(currentUser.room).emit(CHAT_MESSAGE, currentUser.name + ': ' + msg);
-  });
+  socket.on(CHAT_MESSAGE, (msg) => {
+    io.to(currentUser.room).emit(CHAT_MESSAGE, `${currentUser.name}: ${msg}`)
+  })
 
-  socket.on(CMD, function (command) {
-    commandLine = command.split(' ');
+  socket.on(CMD, (command) => {
+    const commandLine = command.split(' ')
     const exec = commandLine[0]
 
     if (exec === '!create') {
       // TODO: disallow people from creating another game if already in one
       // TODO: disallow to start if less than 2 players
-      const roomId = generate();
-      currentUser = changeRoom(socket, roomId);
-      createGame(currentUser, roomId);
+      const roomId = generate()
+      currentUser = changeRoom(socket, roomId)
+      createGame(currentUser, roomId)
     }
 
     if (exec === '!join') {
       // TODO: disallow people from joining if game has started
       // TODO: disallow people from joining another game if already in one
-      const roomId = commandLine[1];
-      currentUser = changeRoom(socket, roomId);
-      addPlayerToGame(currentUser, roomId);
+      const roomId = commandLine[1]
+      currentUser = changeRoom(socket, roomId)
+      addPlayerToGame(currentUser, roomId)
     }
 
-    if (exec == '!start') {
-      const result = games[currentUser.room].bootstrapGame(currentUser, io);
+    if (exec === '!start') {
+      const result = games[currentUser.room].bootstrapGame(currentUser, io)
       if (!result) {
         socket.emit(ERROR_MESSAGE, 'You cannot start a game that you did not create')
       }
     }
 
-    if (exec == '!bet') {
-      const amount = commandLine[1]
+    if (exec === '!raise') {
+      const amount = parseInt(commandLine[1], 10)
+      const currentGame = games[currentUser.room]
+      currentGame.raise(amount, currentUser)
+    }
+
+    if (exec === '!call') {
+      const currentGame = games[currentUser.room]
+      currentGame.call(currentUser)
+    }
+
+    if (exec === '!fold') {
+      const currentGame = games[currentUser.room]
+      currentGame.call(currentUser)
     }
 
     if (debug && exec === '!debug') {
       const currentRoom = Object.keys(socket.rooms)[0]
-      socket.emit(CHAT_MESSAGE, 'currentRoom: ' + JSON.stringify(currentRoom))
-      socket.emit(CHAT_MESSAGE, 'games: ' + JSON.stringify(games))
-      socket.emit(CHAT_MESSAGE, 'users: ' + JSON.stringify(users))
+      socket.emit(CHAT_MESSAGE, `currentRoom: ${JSON.stringify(currentRoom)}`)
+      socket.emit(CHAT_MESSAGE, `games: ${JSON.stringify(games)}`)
+      socket.emit(CHAT_MESSAGE, `users: ${JSON.stringify(users)}`)
       socket.emit(CHAT_MESSAGE, `whomai: ${socket.id}`)
     }
-  });
+  })
+})
 
-});
-
-http.listen(port, function () {
+http.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`listening on *: ${port}`)
+  // eslint-disable-next-line no-console
   console.log(`debug is ${debug}`)
-});
+})

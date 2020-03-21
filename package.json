@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "startDev": "nodemon index.js"
+    "startDev": "nodemon index.js",
+    "pretest": "eslint --ignore-path .gitignore ."
   },
   "devDependencies": {
     "eslint": "^6.8.0",
