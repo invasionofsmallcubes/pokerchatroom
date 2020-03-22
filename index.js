@@ -17,7 +17,7 @@ const users = {}
 const games = {}
 
 function generate() {
-  return (new Date()).getTime().toString(36)
+  return new Date().getTime().toString(36)
 }
 
 function changeRoom(socket, roomId, chat) {
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
       if (currentGame.isPlayerInTurn(currentUser)) {
         currentGame.raise(amount, currentUser, chat)
       } else {
-        chat.error(socket.id, 'You cannot !raise because it\'s not your turn')
+        chat.error(socket.id, "You cannot !raise because it's not your turn")
       }
     }
 
@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
       if (currentGame.isPlayerInTurn(currentUser)) {
         currentGame.call(currentUser, chat)
       } else {
-        chat.error(socket.id, 'You cannot !call because it\'s not your turn')
+        chat.error(socket.id, "You cannot !call because it's not your turn")
       }
     }
 
@@ -108,7 +108,7 @@ io.on('connection', (socket) => {
       if (currentGame.isPlayerInTurn(currentUser)) {
         currentGame.fold(currentUser, chat)
       } else {
-        chat.error(socket.id, 'You cannot !fold because it\'s not your turn')
+        chat.error(socket.id, "You cannot !fold because it's not your turn")
       }
     }
 
