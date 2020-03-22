@@ -78,10 +78,8 @@ io.on('connection', (socket) => {
     }
 
     if (exec === '!start') {
-      const result = games[currentUser.room].bootstrapGame(currentUser, chat)
-      if (!result) {
-        chat.error(socket.id, 'You cannot start a game that you did not create')
-      }
+      const state = games[currentUser.room].bootstrapGame(currentUser)
+      state.print(chat)
     }
 
     if (exec === '!raise') {

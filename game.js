@@ -1,4 +1,6 @@
 const Player = require('./player')
+const ErrorState = require('./errorState')
+const BootstrapState = require('./bootstrapState')
 
 function Game(owner, id) {
   return {
@@ -51,13 +53,9 @@ function Game(owner, id) {
         `Waiting for move from ${this.players[this.waitingPlayer].user.name}`
       )
     },
-    bootstrapGame(userAsking, chat) {
+    bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
         this.hasNotStartedYet = false
-        chat.game(
-          this.id,
-          `Game in room ${this.id} has started by ${owner.name}`
-        )
         this.round = 0
         const l = this.players.length
         this.dealer = this.round % l
@@ -68,50 +66,30 @@ function Game(owner, id) {
         this.poolPrize = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % l
         this.highestBet = this.bigBlind
-        chat.game(
-          this.id,
-          `The dealer is ${this.players[this.dealer].user.name}`
-        )
-        chat.game(
-          this.id,
-          `The small blind is ${this.players[smallBlind].user.name}`
-        )
-        chat.game(
-          this.id,
-          `The big blind is ${this.players[bigBlind].user.name}`
-        )
-        chat.game(this.id, `Current pool prize is: ${this.poolPrize}`)
-        chat.game(this.id, 'Dealing cards...')
         for (let i = 0; i < this.playerSize; i += 1) {
           const handPlayer = this.players[(this.dealer + i) % this.playerSize]
           handPlayer.hand = this.deck.drawTwoCards()
-          chat.toSelf(
-            handPlayer.user.id,
-            `Your hand is ${handPlayer.hand[0]} and ${handPlayer.hand[1]}`
-          )
         }
-        chat.game(
-          this.id,
-          `Waiting for move from ${this.players[this.waitingPlayer].user.name}`
-        )
 
-        const bootstrapState = {
-          startedBy: owner.name,
-          roomId: this.id,
-          dealerName: this.players[this.dealer].user.name,
-          smallBlindName: this.players[smallBlind].user.name,
-          bigBlindName: this.players[bigBlind].user.name,
-          poolPrize: this.poolPrize,
-          nextMoveFrom: this.players[this.waitingPlayer].user.name,
-          hands: this.players.map((player) => ({
+        const bootstrapState = BootstrapState(
+          owner.name,
+          this.id,
+          this.players[this.dealer].user.name,
+          this.players[smallBlind].user.name,
+          this.players[bigBlind].user.name,
+          this.poolPrize,
+          this.players[this.waitingPlayer].user.name,
+          this.players.map((player) => ({
             id: player.user.id,
             cards: player.hand
           }))
-        }
-
+        )
         return bootstrapState
       }
-      return false
+      return ErrorState(
+        userAsking.id,
+        'You cannot start a game that you did not create'
+      )
     }
   }
 }
