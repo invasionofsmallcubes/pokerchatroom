@@ -1,9 +1,5 @@
 const Player = require('./player')
 
-const GAME_MESSAGE = 'game-message'
-const ERROR_MESSAGE = 'error-message'
-const PERSONAL_MESSAGE = 'personal-message'
-
 function Game(owner, id) {
   return {
     owner,
@@ -38,23 +34,23 @@ function Game(owner, id) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
-    raise(amount, user, comms) {
-      comms.to(user.id).emit(ERROR_MESSAGE, `not supported command !raise ${amount}`)
+    raise(amount, user, chat) {
+      chat.error(user.id, `not supported command !raise ${amount}`)
     },
-    call(user, comms) {
-      comms.to(user.id).emit(ERROR_MESSAGE, 'not supported command !call')
+    call(user, chat) {
+      chat.error(user.id, 'not supported command !call')
     },
-    fold(user, comms) {
+    fold(user, chat) {
       const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
       currentPlayer.hasFolded = true
       this.waitingPlayer = (this.waitingPlayer + 1) % this.playerSize
-      comms.to(this.id).emit(GAME_MESSAGE, `Player ${user.name} has folded`)
-      comms.to(this.id).emit(GAME_MESSAGE, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
+      chat.game(this.id, `Player ${user.name} has folded`)
+      chat.game(this.id, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
     },
-    bootstrapGame(userAsking, comms) {
+    bootstrapGame(userAsking, chat) {
       if (this.owner === userAsking) {
         this.hasNotStartedYet = false
-        comms.to(this.id).emit(GAME_MESSAGE, `Game in room ${this.id} has started by ${owner.name}`)
+        chat.game(this.id, `Game in room ${this.id} has started by ${owner.name}`)
         this.round = 0
         const l = this.players.length
         this.dealer = this.round % l
@@ -65,19 +61,17 @@ function Game(owner, id) {
         this.plate = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % l
         this.highestBet = this.bigBlind
-        comms.to(this.id).emit(GAME_MESSAGE, `The dealer is ${this.players[this.dealer].user.name}`)
-        comms.to(this.id).emit(GAME_MESSAGE, `The small blind is ${this.players[smallBlind].user.name}`)
-        comms.to(this.id).emit(GAME_MESSAGE, `The big blind is ${this.players[bigBlind].user.name}`)
-        comms.to(this.id).emit(GAME_MESSAGE, `Current pool prize is: ${this.plate}`)
-        comms.to(this.id).emit(GAME_MESSAGE, 'Dealing cards...')
-
+        chat.game(this.id, `The dealer is ${this.players[this.dealer].user.name}`)
+        chat.game(this.id, `The small blind is ${this.players[smallBlind].user.name}`)
+        chat.game(this.id, `The big blind is ${this.players[bigBlind].user.name}`)
+        chat.game(this.id, `Current pool prize is: ${this.plate}`)
+        chat.game(this.id, 'Dealing cards...')
         for (let i = 0; i < this.playerSize; i += 1) {
           const handPlayer = this.players[(this.dealer + i) % this.playerSize]
           handPlayer.hand = this.deck.drawTwoCards()
-          comms.to(handPlayer.user.id).emit(PERSONAL_MESSAGE, `Your hand is ${handPlayer.hand[0]} and ${handPlayer.hand[1]}`)
+          chat.toSelf(handPlayer.user.id, `Your hand is ${handPlayer.hand[0]} and ${handPlayer.hand[1]}`)
         }
-
-        comms.to(this.id).emit(GAME_MESSAGE, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
+        chat.game(this.id, `Waiting for move from ${this.players[this.waitingPlayer].user.name}`)
         return true
       }
       return false

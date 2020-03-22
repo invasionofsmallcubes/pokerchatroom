@@ -3,12 +3,12 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const User = require('./user')
 const Game = require('./game')
+const Chat = require('./chat')
 
 const port = process.env.PORT || 3000
 const debug = process.env.DEBUG || true
 
 const CHAT_MESSAGE = 'chat-message'
-const ERROR_MESSAGE = 'error-message'
 const INIT_USER = 'init-user'
 const CMD = 'cmd'
 const GENERAL_ROOM = 'generalRoom'
@@ -20,13 +20,13 @@ function generate() {
   return (new Date()).getTime().toString(36)
 }
 
-function changeRoom(socket, roomId) {
+function changeRoom(socket, roomId, chat) {
   socket.leave(GENERAL_ROOM)
   socket.join(roomId)
   const { name } = users[socket.id]
   delete users[socket.id]
   users[socket.id] = User(name, roomId, socket.id)
-  socket.emit(CHAT_MESSAGE, `I will move you on the new room ${roomId}...`)
+  chat.toSelf(socket.id, `I will move you on the new room ${roomId}...`)
   return users[socket.id]
 }
 
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket) => {
+  const chat = Chat(io)
   let currentUser
 
   socket.on(INIT_USER, (name) => {
@@ -53,7 +54,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on(CHAT_MESSAGE, (msg) => {
-    io.to(currentUser.room).emit(CHAT_MESSAGE, `${currentUser.name}: ${msg}`)
+    chat.room(currentUser.room, `${currentUser.name}: ${msg}`)
   })
 
   socket.on(CMD, (command) => {
@@ -64,7 +65,7 @@ io.on('connection', (socket) => {
       // TODO: disallow people from creating another game if already in one
       // TODO: disallow to start if less than 2 players
       const roomId = generate()
-      currentUser = changeRoom(socket, roomId)
+      currentUser = changeRoom(socket, roomId, chat)
       createGame(currentUser, roomId)
     }
 
@@ -72,43 +73,51 @@ io.on('connection', (socket) => {
       // TODO: disallow people from joining if game has started
       // TODO: disallow people from joining another game if already in one
       const roomId = commandLine[1]
-      currentUser = changeRoom(socket, roomId)
+      currentUser = changeRoom(socket, roomId, chat)
       addPlayerToGame(currentUser, roomId)
     }
 
     if (exec === '!start') {
-      const result = games[currentUser.room].bootstrapGame(currentUser, io)
+      const result = games[currentUser.room].bootstrapGame(currentUser, chat)
       if (!result) {
-        socket.emit(ERROR_MESSAGE, 'You cannot start a game that you did not create')
+        chat.error(socket.id, 'You cannot start a game that you did not create')
       }
     }
 
     if (exec === '!raise') {
       const amount = parseInt(commandLine[1], 10)
       const currentGame = games[currentUser.room]
-      currentGame.raise(amount, currentUser, io)
+      if (currentGame.isPlayerInTurn(currentUser)) {
+        currentGame.raise(amount, currentUser, chat)
+      } else {
+        chat.error(socket.id, 'You cannot !raise because it\'s not your turn')
+      }
     }
 
     if (exec === '!call') {
       const currentGame = games[currentUser.room]
-      currentGame.call(currentUser, io)
+      if (currentGame.isPlayerInTurn(currentUser)) {
+        currentGame.call(currentUser, chat)
+      } else {
+        chat.error(socket.id, 'You cannot !call because it\'s not your turn')
+      }
     }
 
     if (exec === '!fold') {
       const currentGame = games[currentUser.room]
       if (currentGame.isPlayerInTurn(currentUser)) {
-        currentGame.fold(currentUser, io)
+        currentGame.fold(currentUser, chat)
       } else {
-        socket.emit(ERROR_MESSAGE, 'You cannot !fold because it\'s not your turn')
+        chat.error(socket.id, 'You cannot !fold because it\'s not your turn')
       }
     }
 
     if (debug && exec === '!debug') {
       const currentRoom = Object.keys(socket.rooms)[0]
-      socket.emit(CHAT_MESSAGE, `currentRoom: ${JSON.stringify(currentRoom)}`)
-      socket.emit(CHAT_MESSAGE, `games: ${JSON.stringify(games)}`)
-      socket.emit(CHAT_MESSAGE, `users: ${JSON.stringify(users)}`)
-      socket.emit(CHAT_MESSAGE, `whomai: ${socket.id}`)
+      chat.toSelf(socket.id, `currentRoom: ${JSON.stringify(currentRoom)}`)
+      chat.toSelf(socket.id, `games: ${JSON.stringify(games)}`)
+      chat.toSelf(socket.id, `users: ${JSON.stringify(users)}`)
+      chat.toSelf(socket.id, `whomai: ${socket.id}`)
     }
   })
 })
