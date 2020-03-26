@@ -1,5 +1,6 @@
 const Player = require('./player')
 const ErrorState = require('./errorState')
+const FoldState = require('./foldState')
 const BootstrapState = require('./bootstrapState')
 
 function Game(owner, id) {
@@ -43,14 +44,23 @@ function Game(owner, id) {
     call(user, chat) {
       chat.error(user.id, 'not supported command !call')
     },
-    fold(user, chat) {
+    fold(user) {
+      if (!this.isPlayerInTurn(user)) {
+        return ErrorState(user.id, 'You cannot !fold because it\'s not your turn')
+      }
       const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
       currentPlayer.hasFolded = true
-      this.waitingPlayer = (this.waitingPlayer + 1) % this.playerSize
-      chat.game(this.id, `Player ${user.name} has folded`)
-      chat.game(
+      for (let i = 1; i < this.playerSize; i += 1) {
+        const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
+        if (!this.players[temporaryWaitingPlayer].hasFolded) {
+          this.waitingPlayer = temporaryWaitingPlayer
+          break
+        }
+      }
+      return FoldState(
+        user.name,
         this.id,
-        `Waiting for move from ${this.players[this.waitingPlayer].user.name}`
+        this.players[this.waitingPlayer].user.name
       )
     },
     bootstrapGame(userAsking) {

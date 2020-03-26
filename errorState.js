@@ -1,9 +1,9 @@
-function ErrorState(id, message) {
+function ErrorState(room, message) {
   return {
-    id,
+    room,
     message,
     print(chat) {
-      chat.error(this.id, message)
+      chat.error(this.room, message)
     }
   }
 }
