@@ -1,6 +1,7 @@
 const Player = require('./player')
 const ErrorState = require('./errorState')
 const FoldState = require('./foldState')
+const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
 
 function Game(owner, id) {
@@ -41,22 +42,29 @@ function Game(owner, id) {
     raise(amount, user, chat) {
       chat.error(user.id, `not supported command !raise ${amount}`)
     },
-    call(user, chat) {
-      chat.error(user.id, 'not supported command !call')
-    },
-    fold(user) {
-      if (!this.isPlayerInTurn(user)) {
-        return ErrorState(user.id, 'You cannot !fold because it\'s not your turn')
-      }
+    calculateWaitingPlayer(user) {
       const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
       currentPlayer.hasFolded = true
       for (let i = 1; i < this.playerSize; i += 1) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
-          this.waitingPlayer = temporaryWaitingPlayer
-          break
+          return temporaryWaitingPlayer
         }
       }
+      return ErrorState(this.id, 'Not found a next player')
+    },
+    call(user) {
+      this.waitingPlayer = this.calculateWaitingPlayer(user)
+      return CallState(user.name,
+        this.id,
+        this.players[this.waitingPlayer].user.name,
+        this.highestBet)
+    },
+    fold(user) {
+      if (!this.isPlayerInTurn(user)) {
+        return ErrorState(user.id, 'You cannot !fold because it\'s not your turn')
+      }
+      this.waitingPlayer = this.calculateWaitingPlayer(user)
       return FoldState(
         user.name,
         this.id,
