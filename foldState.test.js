@@ -1,4 +1,5 @@
 const FoldState = require('./foldState')
+const WaitingState = require('./waitingState')
 
 function Chat() {
   return {
@@ -9,7 +10,8 @@ function Chat() {
 }
 
 test('I can print the message', () => {
-  const foldState = FoldState('name2', 'room', 'name')
+  const room = 'room'
+  const foldState = FoldState('name2', room, WaitingState(room, 'name'))
   const chat = Chat()
   foldState.print(chat)
   expect(chat.game.mock.calls.length)

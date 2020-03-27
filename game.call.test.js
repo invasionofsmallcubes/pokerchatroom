@@ -1,5 +1,6 @@
 const Game = require('./game')
 const User = require('./user')
+const WaitingState = require('./waitingState')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -21,7 +22,9 @@ test('I can call the higher bet on the table', () => {
   expect(state.room).toBe('room')
   expect(state.callingPlayer).toBe('name')
   expect(state.amount).toBe(10)
-  expect(state.nextPlayerName).toBe('name2')
+  const expectedWaitingState = WaitingState(room, 'name2')
+  expect(state.nextPlayerName.room).toBe(expectedWaitingState.room)
+  expect(state.nextPlayerName.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
   expect(state.poolPrize).toBe(25)
 })
 

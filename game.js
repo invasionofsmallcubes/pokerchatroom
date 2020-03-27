@@ -3,6 +3,7 @@ const ErrorState = require('./errorState')
 const FoldState = require('./foldState')
 const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
+const WaitingState = require('./waitingState')
 
 function Game(owner, id) {
   return {
@@ -52,7 +53,7 @@ function Game(owner, id) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
           this.waitingPlayer = temporaryWaitingPlayer
-          return temporaryWaitingPlayer
+          return WaitingState(this.id, this.players[temporaryWaitingPlayer].user.name)
         }
       }
       return ErrorState(this.id, 'Not found a next player')
@@ -68,23 +69,21 @@ function Game(owner, id) {
         const currentPlayer = this.lookupPlayer(user)
         currentPlayer.money -= this.highestBet
         this.poolPrize += this.highestBet
-        this.waitingPlayer = this.calculateWaitingPlayer(user)
         return CallState(user.name,
           this.id,
-          this.players[this.waitingPlayer].user.name,
+          this.calculateWaitingPlayer(user),
           this.highestBet,
           this.poolPrize)
       })
     },
     fold(user) {
-      return this.pokerAction(user, 'fold', () => {
-        this.waitingPlayer = this.calculateWaitingPlayer(user)
-        return FoldState(
+      return this.pokerAction(user, 'fold', () => (
+        FoldState(
           user.name,
           this.id,
-          this.players[this.waitingPlayer].user.name
+          this.calculateWaitingPlayer(user)
         )
-      })
+      ))
     },
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
