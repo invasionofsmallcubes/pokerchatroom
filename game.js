@@ -56,36 +56,34 @@ function Game(owner, id) {
       }
       return ErrorState(this.id, 'Not found a next player')
     },
-    pokerAction(user, singlePokerAction) {
+    pokerAction(user, actionName, singlePokerAction) {
       if (!this.isPlayerInTurn(user)) {
-        return ErrorState(user.id, 'You cannot !call because it\'s not your turn')
+        return ErrorState(user.id, `You cannot !${actionName} because it's not your turn`)
       }
       return singlePokerAction(user)
     },
     call(user) {
-      if (!this.isPlayerInTurn(user)) {
-        return ErrorState(user.id, 'You cannot !call because it\'s not your turn')
-      }
-      const currentPlayer = this.lookupPlayer(user)
-      currentPlayer.money -= this.highestBet
-      this.poolPrize += this.highestBet
-      this.waitingPlayer = this.calculateWaitingPlayer(user)
-      return CallState(user.name,
-        this.id,
-        this.players[this.waitingPlayer].user.name,
-        this.highestBet,
-        this.poolPrize)
+      return this.pokerAction(user, 'call', () => {
+        const currentPlayer = this.lookupPlayer(user)
+        currentPlayer.money -= this.highestBet
+        this.poolPrize += this.highestBet
+        this.waitingPlayer = this.calculateWaitingPlayer(user)
+        return CallState(user.name,
+          this.id,
+          this.players[this.waitingPlayer].user.name,
+          this.highestBet,
+          this.poolPrize)
+      })
     },
     fold(user) {
-      if (!this.isPlayerInTurn(user)) {
-        return ErrorState(user.id, 'You cannot !fold because it\'s not your turn')
-      }
-      this.waitingPlayer = this.calculateWaitingPlayer(user)
-      return FoldState(
-        user.name,
-        this.id,
-        this.players[this.waitingPlayer].user.name
-      )
+      return this.pokerAction(user, 'fold', () => {
+        this.waitingPlayer = this.calculateWaitingPlayer(user)
+        return FoldState(
+          user.name,
+          this.id,
+          this.players[this.waitingPlayer].user.name
+        )
+      })
     },
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {

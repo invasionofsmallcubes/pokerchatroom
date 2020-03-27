@@ -96,11 +96,8 @@ io.on('connection', (socket) => {
 
     if (exec === '!call') {
       const currentGame = games[currentUser.room]
-      if (currentGame.isPlayerInTurn(currentUser)) {
-        currentGame.call(currentUser, chat)
-      } else {
-        chat.error(socket.id, 'You cannot !call because it\'s not your turn')
-      }
+      const state = currentGame.call(currentUser, chat)
+      state.print(chat)
     }
 
     if (exec === '!fold') {
