@@ -51,6 +51,7 @@ function Game(owner, id) {
       for (let i = 1; i < this.playerSize; i += 1) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
+          this.waitingPlayer = temporaryWaitingPlayer
           return temporaryWaitingPlayer
         }
       }
