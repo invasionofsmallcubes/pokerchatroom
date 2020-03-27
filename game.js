@@ -35,6 +35,9 @@ function Game(owner, id) {
       }
       return this.hasNotStartedYet
     },
+    lookupPlayer(user) {
+      return this.players.filter((p) => p.user.id === user.id)[0]
+    },
     isPlayerInTurn(user) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
@@ -43,7 +46,7 @@ function Game(owner, id) {
       chat.error(user.id, `not supported command !raise ${amount}`)
     },
     calculateWaitingPlayer(user) {
-      const currentPlayer = this.players.filter((p) => p.user.id === user.id)[0]
+      const currentPlayer = this.lookupPlayer(user)
       currentPlayer.hasFolded = true
       for (let i = 1; i < this.playerSize; i += 1) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
@@ -53,12 +56,25 @@ function Game(owner, id) {
       }
       return ErrorState(this.id, 'Not found a next player')
     },
+    pokerAction(user, singlePokerAction) {
+      if (!this.isPlayerInTurn(user)) {
+        return ErrorState(user.id, 'You cannot !call because it\'s not your turn')
+      }
+      return singlePokerAction(user)
+    },
     call(user) {
+      if (!this.isPlayerInTurn(user)) {
+        return ErrorState(user.id, 'You cannot !call because it\'s not your turn')
+      }
+      const currentPlayer = this.lookupPlayer(user)
+      currentPlayer.money -= this.highestBet
+      this.poolPrize += this.highestBet
       this.waitingPlayer = this.calculateWaitingPlayer(user)
       return CallState(user.name,
         this.id,
         this.players[this.waitingPlayer].user.name,
-        this.highestBet)
+        this.highestBet,
+        this.poolPrize)
     },
     fold(user) {
       if (!this.isPlayerInTurn(user)) {
@@ -89,7 +105,7 @@ function Game(owner, id) {
           handPlayer.hand = this.deck.drawTwoCards()
         }
 
-        const bootstrapState = BootstrapState(
+        return BootstrapState(
           owner.name,
           this.id,
           this.players[this.dealer].user.name,
@@ -102,7 +118,6 @@ function Game(owner, id) {
             cards: player.hand
           }))
         )
-        return bootstrapState
       }
       return ErrorState(
         userAsking.id,
