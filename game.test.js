@@ -11,6 +11,7 @@ game.addPlayer(user2)
 test('I can bootstrap a game', () => {
   const state = game.bootstrapGame(user)
 
+  expect(game.lastPlayerInTurn).toBe(0)
   expect(state.startedBy).toBe(user.name)
   expect(state.roomId).toBe(room)
   expect(state.dealerName).toBe('name')

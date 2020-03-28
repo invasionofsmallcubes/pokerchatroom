@@ -4,6 +4,7 @@ const FoldState = require('./foldState')
 const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
+const RaiseState = require('./raiseState')
 
 function Game(owner, id) {
   return {
@@ -13,6 +14,7 @@ function Game(owner, id) {
     hasNotStartedYet: true,
     dealer: undefined,
     round: undefined,
+    lastPlayerInTurn: undefined,
     smallBlind: 5,
     bigBlind: 10,
     playerSize: 0,
@@ -82,8 +84,13 @@ function Game(owner, id) {
         )
       ))
     },
-    raise(amount, user, chat) {
-      chat.error(user.id, `not supported command !raise ${amount}`)
+    raise(amount, user) {
+      return this.pokerAction(user, 'raise', () => {
+        const currentPlayer = this.lookupPlayer(user)
+        currentPlayer.money -= amount
+        this.poolPrize += amount
+        return RaiseState(user.name, this.id, amount, this.calculateWaitingPlayer(user))
+      })
     },
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
@@ -97,6 +104,7 @@ function Game(owner, id) {
         this.poolPrize = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % this.playerSize
         this.highestBet = this.bigBlind
+        this.lastPlayerInTurn = bigBlind
         for (let i = 0; i < this.playerSize; i += 1) {
           const handPlayer = this.players[(this.dealer + i) % this.playerSize]
           handPlayer.hand = this.deck.drawTwoCards()
