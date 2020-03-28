@@ -35,7 +35,6 @@ test("I cannot bet on the game, if it's not my turn", () => {
 test('The next player will be the one that has not already folded', () => {
   game.players[1].hasFolded = true
   const foldState = game.fold(user)
-  const expectedWaitingState = WaitingState(room, 'name3')
-  expect(foldState.nextPlayerName.room).toBe(expectedWaitingState.room)
-  expect(foldState.nextPlayerName.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
+  expect(foldState.nextPlayerName.room).toBe(room)
+  expect(foldState.nextPlayerName.nextPlayerName).toBe('name3')
 })

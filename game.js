@@ -5,6 +5,7 @@ const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
+// const WinningState = require('./winningState')
 
 function Game(owner, id) {
   return {
@@ -45,9 +46,7 @@ function Game(owner, id) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
-    calculateWaitingPlayer(user) {
-      const currentPlayer = this.lookupPlayer(user)
-      currentPlayer.hasFolded = true
+    calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
@@ -56,6 +55,12 @@ function Game(owner, id) {
         }
       }
       return ErrorState(this.id, 'Not found a next player')
+    },
+    calculateNextStep() {
+      // if (this.waitingPlayer === this.lastPlayerInTurn) {
+      //   return WinningState(this.players[this.waitingPlayer].user.name, this.id)
+      // }
+      return this.calculateNextPlayer()
     },
     pokerAction(user, actionName, singlePokerAction) {
       if (!this.isPlayerInTurn(user)) {
@@ -70,26 +75,24 @@ function Game(owner, id) {
         this.poolPrize += this.highestBet
         return CallState(user.name,
           this.id,
-          this.calculateWaitingPlayer(user),
+          this.calculateNextStep(),
           this.highestBet,
           this.poolPrize)
       })
     },
     fold(user) {
-      return this.pokerAction(user, 'fold', () => (
-        FoldState(
-          user.name,
-          this.id,
-          this.calculateWaitingPlayer(user)
-        )
-      ))
+      return this.pokerAction(user, 'fold', () => {
+        const currentPlayer = this.lookupPlayer(user)
+        currentPlayer.hasFolded = true
+        return FoldState(user.name, this.id, this.calculateNextStep())
+      })
     },
     raise(amount, user) {
       return this.pokerAction(user, 'raise', () => {
         const currentPlayer = this.lookupPlayer(user)
         currentPlayer.money -= amount
         this.poolPrize += amount
-        return RaiseState(user.name, this.id, amount, this.calculateWaitingPlayer(user))
+        return RaiseState(user.name, this.id, amount, this.calculateNextStep())
       })
     },
     bootstrapGame(userAsking) {

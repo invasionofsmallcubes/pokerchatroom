@@ -87,11 +87,8 @@ io.on('connection', (socket) => {
     if (exec === '!raise') {
       const amount = parseInt(commandLine[1], 10)
       const currentGame = games[currentUser.room]
-      if (currentGame.isPlayerInTurn(currentUser)) {
-        currentGame.raise(amount, currentUser, chat)
-      } else {
-        chat.error(socket.id, 'You cannot !raise because it\'s not your turn')
-      }
+      const state = currentGame.raise(amount, currentUser, chat)
+      state.print(chat)
     }
 
     if (exec === '!call') {
