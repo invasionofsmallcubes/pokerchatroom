@@ -43,9 +43,6 @@ function Game(owner, id) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
-    raise(amount, user, chat) {
-      chat.error(user.id, `not supported command !raise ${amount}`)
-    },
     calculateWaitingPlayer(user) {
       const currentPlayer = this.lookupPlayer(user)
       currentPlayer.hasFolded = true
@@ -85,18 +82,20 @@ function Game(owner, id) {
         )
       ))
     },
+    raise(amount, user, chat) {
+      chat.error(user.id, `not supported command !raise ${amount}`)
+    },
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
         this.hasNotStartedYet = false
         this.round = 0
-        const l = this.players.length
-        this.dealer = this.round % l
-        const smallBlind = (this.dealer + 1) % l
-        const bigBlind = (this.dealer + 2) % l
-        this.players[(this.dealer + 1) % l].money -= this.smallBlind
-        this.players[(this.dealer + 2) % l].money -= this.bigBlind
+        this.dealer = this.round % this.playerSize
+        const smallBlind = (this.dealer + 1) % this.playerSize
+        const bigBlind = (this.dealer + 2) % this.playerSize
+        this.players[(this.dealer + 1) % this.playerSize].money -= this.smallBlind
+        this.players[(this.dealer + 2) % this.playerSize].money -= this.bigBlind
         this.poolPrize = this.bigBlind + this.smallBlind
-        this.waitingPlayer = (this.dealer + 3) % l
+        this.waitingPlayer = (this.dealer + 3) % this.playerSize
         this.highestBet = this.bigBlind
         for (let i = 0; i < this.playerSize; i += 1) {
           const handPlayer = this.players[(this.dealer + i) % this.playerSize]
