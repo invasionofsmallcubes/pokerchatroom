@@ -3,34 +3,11 @@
     ☐ put all strings in encoded format with variables inside the strings
     ☐ create texas holdem engine (this doesn't look it's found anywhere the way I like it)
         This follows the following steps:
-            Six players numbered from 1 to 6, where #2 is to the left of #1 at the table
-            Starting round is
-            - #1 is the dealer ✔️
-            - #2 is the small blind (*sb*) bet ✔️
-            - #3 is the big blind (*bb*) bet ✔️
-            - *sb* and *bb* put the money on the table as initial amount ✔️
-            - #1 give 2 cards per player, #1 being the last ✔️
-            - #4 is the first one to play one of the following actions:
-                - call: put the same money as the one before him
-                - fold: doesn't play anymore, doesn't recover any money played
-                - raise: call action plus at least 1 dollar more        
-                - all in: offer what you have        
-            - #4 raise
-            - #5 call
-            - #6 call
-            - #1 call
-            - #2 call
-            - #3 call (last to play)
-            - #1 dealer mette tre carte giù, face up (flop)
-            - #2 è l'active player e può fare check, bet, o fold
-            - si continua finché si continua a fare bet, si finisce se tutti check o fold
-            - #1 dealer butta giù altra carta (turn)
-            - stesso giro partendo dal #2
-            - #1 dealer butta giù altra carta (river)
-            - stesso giro partendo dal #2
-            - si calcolano le combinazioni ed il vincitore
-        
-        Giro alternativo, tutti foldano tranne uno.
-    ☐ introduce this library to evaluate [card deck](https://github.com/kadamwhite/node-card-deck)
+            Player 4 – Calls the big blind (25¢)
+            Player 5 – folds
+            Player 1 – Calls the big blind (25¢)
+            Player 2 – Calls the big blind (since they already have 10¢ bet, they only have to add another 15¢, for a total of 25¢)
+            Player 3 – Checks (since they already have the bet matched, they do not need to add more money to call; this is called checking)        
+    ☐ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck)
     ☐ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver)
 
