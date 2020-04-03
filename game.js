@@ -5,7 +5,7 @@ const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
-// const WinningState = require('./winningState')
+const WinningState = require('./winningState')
 
 function Game(owner, id) {
   return {
@@ -48,23 +48,35 @@ function Game(owner, id) {
     },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
-        const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
+        // eslint-disable-next-line operator-linebreak
+        const temporaryWaitingPlayer =
+          (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
           this.waitingPlayer = temporaryWaitingPlayer
-          return WaitingState(this.id, this.players[temporaryWaitingPlayer].user.name)
+          return WaitingState(
+            this.id,
+            this.players[temporaryWaitingPlayer].user.name
+          )
         }
       }
       return ErrorState(this.id, 'Not found a next player')
     },
     calculateNextStep() {
-      // if (this.waitingPlayer === this.lastPlayerInTurn) {
-      //   return WinningState(this.players[this.waitingPlayer].user.name, this.id)
-      // }
+      const playersThatDidntFold = this.players.filter((p) => !p.hasFolded)
+      if (playersThatDidntFold.length === 1) {
+        const winner = playersThatDidntFold[0]
+        winner.money += this.poolPrize
+        this.poolPrize = 0
+        return WinningState(winner.user.name, this.id)
+      }
       return this.calculateNextPlayer()
     },
     pokerAction(user, actionName, singlePokerAction) {
       if (!this.isPlayerInTurn(user)) {
-        return ErrorState(user.id, `You cannot !${actionName} because it's not your turn`)
+        return ErrorState(
+          user.id,
+          `You cannot !${actionName} because it's not your turn`
+        )
       }
       return singlePokerAction(user)
     },
@@ -73,11 +85,13 @@ function Game(owner, id) {
         const currentPlayer = this.lookupPlayer(user)
         currentPlayer.money -= this.highestBet
         this.poolPrize += this.highestBet
-        return CallState(user.name,
+        return CallState(
+          user.name,
           this.id,
           this.calculateNextStep(),
           this.highestBet,
-          this.poolPrize)
+          this.poolPrize
+        )
       })
     },
     fold(user) {
@@ -102,7 +116,9 @@ function Game(owner, id) {
         this.dealer = this.round % this.playerSize
         const smallBlind = (this.dealer + 1) % this.playerSize
         const bigBlind = (this.dealer + 2) % this.playerSize
-        this.players[(this.dealer + 1) % this.playerSize].money -= this.smallBlind
+        this.players[
+          (this.dealer + 1) % this.playerSize
+        ].money -= this.smallBlind
         this.players[(this.dealer + 2) % this.playerSize].money -= this.bigBlind
         this.poolPrize = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % this.playerSize

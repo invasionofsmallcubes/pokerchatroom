@@ -1,6 +1,5 @@
 const Game = require('./game')
 const User = require('./user')
-// const RaiseState = require('./raiseState')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -20,7 +19,9 @@ beforeEach(() => {
 test("I cannot bet on the game, if it's not my turn", () => {
   const errorState = game.raise(15, user2)
   expect(errorState.room).toBe('id2')
-  expect(errorState.message).toBe("You cannot !raise because it's not your turn")
+  expect(errorState.message).toBe(
+    "You cannot !raise because it's not your turn"
+  )
 })
 
 test("I can bet on the game, if it's my turn", () => {
