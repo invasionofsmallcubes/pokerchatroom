@@ -6,7 +6,6 @@ const room = 'room'
 const user = User('name', room, 'id')
 const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
-
 let game
 
 beforeEach(() => {
@@ -22,7 +21,9 @@ test("I can bet on the game, if it's my turn", () => {
   expect(foldState.foldingPlayerName).toBe('name')
   const expectedWaitingState = WaitingState(room, 'name2')
   expect(foldState.nextPlayerName.room).toBe(expectedWaitingState.room)
-  expect(foldState.nextPlayerName.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
+  expect(foldState.nextPlayerName.nextPlayerName).toBe(
+    expectedWaitingState.nextPlayerName
+  )
   expect(foldState.room).toBe('room')
 })
 
@@ -33,8 +34,17 @@ test("I cannot bet on the game, if it's not my turn", () => {
 })
 
 test('The next player will be the one that has not already folded', () => {
-  game.players[1].hasFolded = true
-  const foldState = game.fold(user)
+  const user4 = User('name4', room, 'id4')
+
+  const game1 = Game(user, room)
+  game1.addPlayer(user)
+  game1.addPlayer(user2)
+  game1.addPlayer(user3)
+  game1.addPlayer(user4)
+  game1.bootstrapGame(user)
+
+  game1.players[1].hasFolded = true
+  const foldState = game1.fold(user4)
   expect(foldState.nextPlayerName.room).toBe(room)
-  expect(foldState.nextPlayerName.nextPlayerName).toBe('name3')
+  expect(foldState.nextPlayerName.nextPlayerName).toBe('name')
 })
