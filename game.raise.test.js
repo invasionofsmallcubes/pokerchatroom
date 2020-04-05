@@ -31,6 +31,6 @@ test("I can bet on the game, if it's my turn", () => {
   expect(gameState.room).toBe(room)
   expect(gameState.bettingPlayerName).toBe('name')
   expect(gameState.amount).toBe(15)
-  expect(gameState.nextPlayerName.room).toBe('room')
-  expect(gameState.nextPlayerName.nextPlayerName).toBe('name2')
+  expect(gameState.nextState.room).toBe('room')
+  expect(gameState.nextState.nextPlayerName).toBe('name2')
 })

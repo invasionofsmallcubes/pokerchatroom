@@ -1,12 +1,12 @@
-function FoldState(foldingPlayerName, room, nextPlayerName) {
+function FoldState(foldingPlayerName, room, nextState) {
   return {
     foldingPlayerName,
     room,
-    nextPlayerName,
+    nextState,
     print(chat) {
       chat.game(this.room, `Player ${this.foldingPlayerName} has folded`)
-      nextPlayerName.print(chat)
-    }
+      nextState.print(chat)
+    },
   }
 }
 module.exports = FoldState
