@@ -80,22 +80,11 @@ function Game(owner, id) {
       if (this.lastPlayerInTurn === this.waitingPlayer) {
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()
-          this.currentStep += 1
-          return FlopState(
-            this.cardsOnTable,
-            this.id,
-            this.calculateNextPlayer()
-          )
-        }
-        if (this.currentStep === 1) {
+        } else {
           this.cardsOnTable.push(this.deck.drawOneCard())
-          this.currentStep += 1
-          return FlopState(
-            this.cardsOnTable,
-            this.id,
-            this.calculateNextPlayer()
-          )
         }
+        this.currentStep += 1
+        return FlopState(this.cardsOnTable, this.id, this.calculateNextPlayer())
       }
       return this.calculateNextPlayer()
     },

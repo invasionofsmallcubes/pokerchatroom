@@ -25,7 +25,7 @@ test("if everybody folds, the last one that didn't fold wins", () => {
   expect(game.poolPrize).toBe(0)
 })
 
-test('I am able to compute river', () => {
+test('I am able to compute flop', () => {
   game.call(user)
   game.call(user2)
   const nextState = game.call(user3)
@@ -33,9 +33,10 @@ test('I am able to compute river', () => {
   expect(nextState.nextState.room).toBe(room)
   expect(nextState.nextState.cards).toEqual(['3', '4', '5'])
   expect(game.cardsOnTable).toEqual(['3', '4', '5'])
+  expect(game.currentStep).toBe(1)
 })
 
-test('I am able to compute the one after river', () => {
+test('I am able to compute the turn', () => {
   game.call(user)
   game.call(user2)
   game.call(user3)
@@ -48,4 +49,25 @@ test('I am able to compute the one after river', () => {
   expect(nextState.nextState.room).toBe(room)
   expect(nextState.nextState.cards).toEqual(['3', '4', '5', '6'])
   expect(game.cardsOnTable).toEqual(['3', '4', '5', '6'])
+  expect(game.currentStep).toBe(2)
+})
+
+test('I am able to compute the flop', () => {
+  game.call(user)
+  game.call(user2)
+  game.call(user3)
+
+  game.call(user)
+  game.call(user2)
+  game.call(user3)
+
+  game.call(user)
+  game.call(user2)
+  const nextState = game.call(user3)
+
+  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
+  expect(nextState.nextState.room).toBe(room)
+  expect(nextState.nextState.cards).toEqual(['3', '4', '5', '6', '6'])
+  expect(game.cardsOnTable).toEqual(['3', '4', '5', '6', '6'])
+  expect(game.currentStep).toBe(3)
 })
