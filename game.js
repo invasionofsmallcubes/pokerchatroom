@@ -6,7 +6,7 @@ const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
 const WinningState = require('./winningState')
-const RiverState = require('./riverState')
+const FlopState = require('./flopState')
 
 function Game(owner, id) {
   return {
@@ -22,6 +22,7 @@ function Game(owner, id) {
     playerSize: 0,
     highestBet: 0,
     poolPrize: 0,
+    currentStep: 0,
     deck: {
       drawTwoCards() {
         return ['1', '2']
@@ -30,7 +31,7 @@ function Game(owner, id) {
         return ['3', '4', '5']
       },
       drawOneCard() {
-        return ['6']
+        return '6'
       },
     },
     addPlayer(user) {
@@ -77,12 +78,24 @@ function Game(owner, id) {
         return WinningState(winner.user.name, this.id)
       }
       if (this.lastPlayerInTurn === this.waitingPlayer) {
-        this.cardsOnTable = this.deck.drawThreeCards()
-        return RiverState(
-          this.cardsOnTable,
-          this.id,
-          this.calculateNextPlayer()
-        )
+        if (this.currentStep === 0) {
+          this.cardsOnTable = this.deck.drawThreeCards()
+          this.currentStep += 1
+          return FlopState(
+            this.cardsOnTable,
+            this.id,
+            this.calculateNextPlayer()
+          )
+        }
+        if (this.currentStep === 1) {
+          this.cardsOnTable.push(this.deck.drawOneCard())
+          this.currentStep += 1
+          return FlopState(
+            this.cardsOnTable,
+            this.id,
+            this.calculateNextPlayer()
+          )
+        }
       }
       return this.calculateNextPlayer()
     },

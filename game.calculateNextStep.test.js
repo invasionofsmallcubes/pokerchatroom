@@ -29,8 +29,23 @@ test('I am able to compute river', () => {
   game.call(user)
   game.call(user2)
   const nextState = game.call(user3)
-  expect(nextState.nextState.nextPlayerName.nextPlayerName).toBe('name')
+  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
   expect(nextState.nextState.room).toBe(room)
   expect(nextState.nextState.cards).toEqual(['3', '4', '5'])
   expect(game.cardsOnTable).toEqual(['3', '4', '5'])
+})
+
+test('I am able to compute the one after river', () => {
+  game.call(user)
+  game.call(user2)
+  game.call(user3)
+
+  game.call(user)
+  game.call(user2)
+  const nextState = game.call(user3)
+
+  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
+  expect(nextState.nextState.room).toBe(room)
+  expect(nextState.nextState.cards).toEqual(['3', '4', '5', '6'])
+  expect(game.cardsOnTable).toEqual(['3', '4', '5', '6'])
 })
