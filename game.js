@@ -22,6 +22,7 @@ function Game(owner, id) {
     playerSize: 0,
     highestBet: 0,
     poolPrize: 0,
+    // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
     deck: {
       drawTwoCards() {
@@ -131,16 +132,14 @@ function Game(owner, id) {
         this.hasNotStartedYet = false
         this.round = 0
         this.dealer = this.round % this.playerSize
-        const smallBlind = (this.dealer + 1) % this.playerSize
-        const bigBlind = (this.dealer + 2) % this.playerSize
-        this.players[
-          (this.dealer + 1) % this.playerSize
-        ].money -= this.smallBlind
-        this.players[(this.dealer + 2) % this.playerSize].money -= this.bigBlind
+        const smallBlindIdx = (this.dealer + 1) % this.playerSize
+        const bigBlindIdx = (this.dealer + 2) % this.playerSize
+        this.players[smallBlindIdx].money -= this.smallBlind
+        this.players[bigBlindIdx].money -= this.bigBlind
         this.poolPrize = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % this.playerSize
         this.highestBet = this.bigBlind
-        this.lastPlayerInTurn = bigBlind
+        this.lastPlayerInTurn = bigBlindIdx
         for (let i = 0; i < this.playerSize; i += 1) {
           const handPlayer = this.players[(this.dealer + i) % this.playerSize]
           handPlayer.hand = this.deck.drawTwoCards()
@@ -150,8 +149,8 @@ function Game(owner, id) {
           owner.name,
           this.id,
           this.players[this.dealer].user.name,
-          this.players[smallBlind].user.name,
-          this.players[bigBlind].user.name,
+          this.players[smallBlindIdx].user.name,
+          this.players[bigBlindIdx].user.name,
           this.poolPrize,
           this.players[this.waitingPlayer].user.name,
           this.players.map((player) => ({
