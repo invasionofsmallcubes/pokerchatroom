@@ -6,6 +6,7 @@ const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
 const WinningState = require('./winningState')
+const RiverState = require('./riverState')
 
 function Game(owner, id) {
   return {
@@ -30,7 +31,7 @@ function Game(owner, id) {
       },
       drawOneCard() {
         return ['6']
-      }
+      },
     },
     addPlayer(user) {
       if (this.hasNotStartedYet) {
@@ -61,13 +62,27 @@ function Game(owner, id) {
       }
       return ErrorState(this.id, 'Not found a next player')
     },
-    calculateNextStep() {
+    everyPlayerHasFolded() {
       const playersThatDidntFold = this.players.filter((p) => !p.hasFolded)
-      if (playersThatDidntFold.length === 1) {
-        const winner = playersThatDidntFold[0]
+      return playersThatDidntFold.length === 1
+    },
+    playerNotFolding() {
+      return this.players.filter((p) => !p.hasFolded)[0]
+    },
+    calculateNextStep() {
+      if (this.everyPlayerHasFolded()) {
+        const winner = this.playerNotFolding()
         winner.money += this.poolPrize
         this.poolPrize = 0
         return WinningState(winner.user.name, this.id)
+      }
+      if (this.lastPlayerInTurn === this.waitingPlayer) {
+        this.cardsOnTable = this.deck.drawThreeCards()
+        return RiverState(
+          this.cardsOnTable,
+          this.id,
+          this.calculateNextPlayer()
+        )
       }
       return this.calculateNextPlayer()
     },
@@ -139,7 +154,7 @@ function Game(owner, id) {
           this.players[this.waitingPlayer].user.name,
           this.players.map((player) => ({
             id: player.user.id,
-            cards: player.hand
+            cards: player.hand,
           }))
         )
       }
@@ -147,7 +162,7 @@ function Game(owner, id) {
         userAsking.id,
         'You cannot start a game that you did not create'
       )
-    }
+    },
   }
 }
 

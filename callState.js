@@ -1,15 +1,18 @@
-function CallState(callingPlayer, room, nextPlayerName, amount, poolPrize) {
+function CallState(callingPlayer, room, nextState, amount, poolPrize) {
   return {
     callingPlayer,
     room,
-    nextPlayerName,
+    nextState,
     amount,
     poolPrize,
     print(chat) {
-      chat.game(this.room, `Player ${this.callingPlayer} has called (${this.amount})`)
+      chat.game(
+        this.room,
+        `Player ${this.callingPlayer} has called (${this.amount})`
+      )
       chat.game(this.room, `The pool prize is ${this.poolPrize}`)
-      nextPlayerName.print(chat)
-    }
+      nextState.print(chat)
+    },
   }
 }
 

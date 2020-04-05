@@ -24,3 +24,13 @@ test("if everybody folds, the last one that didn't fold wins", () => {
   expect(game.lookupPlayer(user3).money).toBe(105)
   expect(game.poolPrize).toBe(0)
 })
+
+test('I am able to compute river', () => {
+  game.call(user)
+  game.call(user2)
+  const nextState = game.call(user3)
+  expect(nextState.nextState.nextPlayerName.nextPlayerName).toBe('name')
+  expect(nextState.nextState.room).toBe(room)
+  expect(nextState.nextState.cards).toEqual(['3', '4', '5'])
+  expect(game.cardsOnTable).toEqual(['3', '4', '5'])
+})
