@@ -79,6 +79,10 @@ function Game(owner, id) {
         return WinningState(winner.user.name, this.id)
       }
       if (this.lastPlayerInTurn === this.waitingPlayer) {
+        if (this.currentStep === 3) {
+          this.currentStep += 1
+          return WinningState('name3', this.id)
+        }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()
         } else {
