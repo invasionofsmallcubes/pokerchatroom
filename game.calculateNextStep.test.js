@@ -9,7 +9,12 @@ const user3 = User('name3', room, 'id3')
 let game
 
 beforeEach(() => {
-  game = Game(user, room)
+  const winnerCalculator = function WinnerCalculator() {
+    return {
+      calculateWinningPlayer: () => 2,
+    }
+  }
+  game = Game(user, room, winnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

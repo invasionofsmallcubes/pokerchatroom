@@ -1,4 +1,4 @@
-function FlopState(cards, room, nextState) {
+function NextState(cards, room, nextState) {
   return {
     cards,
     room,
@@ -9,4 +9,4 @@ function FlopState(cards, room, nextState) {
     },
   }
 }
-module.exports = FlopState
+module.exports = NextState

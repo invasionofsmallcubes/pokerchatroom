@@ -1,4 +1,5 @@
 const Player = require('./player')
+const CardExamination = require('./cardExamination')
 const ErrorState = require('./errorState')
 const FoldState = require('./foldState')
 const CallState = require('./callState')
@@ -6,10 +7,10 @@ const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
 const WinningState = require('./winningState')
-const FlopState = require('./flopState')
+const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
 
-function Game(owner, id) {
+function Game(owner, id, winnerCalculator) {
   return {
     owner,
     id,
@@ -23,6 +24,7 @@ function Game(owner, id) {
     playerSize: 0,
     highestBet: 0,
     poolPrize: 0,
+    winnerCalculator,
     // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
     deck: {
@@ -51,7 +53,18 @@ function Game(owner, id) {
       return user.id === currentPlayer.user.id
     },
     calculateWinningPlayer() {
-      return this.players[2]
+      const cardExaminations = []
+      for (let i = 0; i < this.players.length; i += 1) {
+        const player = this.players[i]
+        if (!player.hasFolded) {
+          let hand = []
+          hand = hand.concat(player.hand, this.cardsOnTable)
+          cardExaminations.push(CardExamination(i, hand))
+        }
+      }
+      return this.players[
+        this.winnerCalculator.calculateWinningPlayer(cardExaminations)
+      ]
     },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
@@ -95,7 +108,7 @@ function Game(owner, id) {
           this.cardsOnTable.push(this.deck.drawOneCard())
         }
         this.currentStep += 1
-        return FlopState(this.cardsOnTable, this.id, this.calculateNextPlayer())
+        return NextState(this.cardsOnTable, this.id, this.calculateNextPlayer())
       }
       return this.calculateNextPlayer()
     },
