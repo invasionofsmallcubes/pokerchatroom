@@ -5,6 +5,7 @@ const User = require('./user')
 const Game = require('./game')
 const Chat = require('./chat')
 const PokerDeck = require('./pokerDeck')
+const WinnerCalculator = require('./winnerCalculator')
 
 const port = process.env.PORT || 3000
 const debug = process.env.DEBUG || true
@@ -36,7 +37,7 @@ function addPlayerToGame(player, id) {
 }
 
 function createGame(owner, id) {
-  games[id] = Game(owner, id, PokerDeck())
+  games[id] = Game(owner, id, PokerDeck(), WinnerCalculator())
   addPlayerToGame(owner, id)
 }
 
