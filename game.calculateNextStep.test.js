@@ -63,7 +63,7 @@ test('I am able to compute the flop', () => {
   expect(game.currentStep).toBe(3)
 })
 
-xtest('I am able to compute the showdown', () => {
+test('I am able to compute the showdown', () => {
   // preflop
   game.call(user)
   game.call(user2)
@@ -84,10 +84,11 @@ xtest('I am able to compute the showdown', () => {
   game.call(user2)
   const winningState = game.call(user3)
 
+  expect(game.currentStep).toBe(4)
   expect(winningState.nextState.winnerPlayer).toBe('name3')
   expect(winningState.nextState.room).toBe(room)
-  expect(game.lookupPlayer(user3).money).toBe(105)
-  expect(game.poolPrize).toBe(0)
+  expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
+  expect(game.poolPrize).toBe(30)
 })
 
 test("if everybody folds, the last one that didn't fold wins", () => {

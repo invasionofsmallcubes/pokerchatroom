@@ -3,6 +3,7 @@ function Player(user, money) {
     user,
     money,
     hasFolded: false,
+    bet: 0,
   }
 }
 

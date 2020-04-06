@@ -34,12 +34,19 @@ test('I can call the higher bet on the table', () => {
   expect(state.room).toBe('room')
   expect(state.callingPlayer).toBe('name')
   expect(state.amount).toBe(10)
-  const expectedWaitingState = WaitingState(room, 'name2')
-  expect(state.nextState.room).toBe(expectedWaitingState.room)
-  expect(state.nextState.nextPlayerName).toBe(
-    expectedWaitingState.nextPlayerName
-  )
+  expect(state.nextState.room).toBe(room)
+  expect(state.nextState.nextPlayerName).toBe('name2')
   expect(state.poolPrize).toBe(25)
+})
+
+test('I can call the higher bet on the table and it becomes a check', () => {
+  game.call(user)
+  game.call(user2)
+  const state = game.call(user3)
+  expect(state.room).toBe('room')
+  expect(state.checkingPlayer).toBe('name3')
+  expect(state.nextState.nextState.room).toBe(room)
+  expect(state.nextState.nextState.nextPlayerName).toBe('name')
 })
 
 test("I can't call the higher bet on the table when it's not my turn", () => {

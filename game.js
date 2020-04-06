@@ -7,6 +7,7 @@ const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
 const WinningState = require('./winningState')
 const FlopState = require('./flopState')
+const CheckingState = require('./checkingState')
 
 function Game(owner, id) {
   return {
@@ -49,6 +50,9 @@ function Game(owner, id) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
+    calculateWinningPlayer() {
+      return this.players[2]
+    },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
         // eslint-disable-next-line operator-linebreak
@@ -81,7 +85,9 @@ function Game(owner, id) {
       if (this.lastPlayerInTurn === this.waitingPlayer) {
         if (this.currentStep === 3) {
           this.currentStep += 1
-          return WinningState('name3', this.id)
+          const p = this.calculateWinningPlayer()
+          p.money += this.poolPrize
+          return WinningState(p.user.name, this.id)
         }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()
@@ -105,15 +111,20 @@ function Game(owner, id) {
     call(user) {
       return this.pokerAction(user, 'call', () => {
         const currentPlayer = this.lookupPlayer(user)
-        currentPlayer.money -= this.highestBet
-        this.poolPrize += this.highestBet
-        return CallState(
-          user.name,
-          this.id,
-          this.calculateNextStep(),
-          this.highestBet,
-          this.poolPrize
-        )
+        if (currentPlayer.bet < this.highestBet) {
+          const moneyToAdd = this.highestBet - currentPlayer.bet
+          currentPlayer.money -= moneyToAdd
+          currentPlayer.bet += moneyToAdd
+          this.poolPrize += moneyToAdd
+          return CallState(
+            user.name,
+            this.id,
+            this.calculateNextStep(),
+            this.highestBet,
+            this.poolPrize
+          )
+        }
+        return CheckingState(user.name, this.id, this.calculateNextStep())
       })
     },
     fold(user) {
@@ -127,6 +138,7 @@ function Game(owner, id) {
       return this.pokerAction(user, 'raise', () => {
         const currentPlayer = this.lookupPlayer(user)
         currentPlayer.money -= amount
+        currentPlayer.bet += amount
         this.poolPrize += amount
         return RaiseState(user.name, this.id, amount, this.calculateNextStep())
       })
@@ -134,12 +146,15 @@ function Game(owner, id) {
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
         this.hasNotStartedYet = false
+        this.hasNotStartedYet = false
         this.round = 0
         this.dealer = this.round % this.playerSize
         const smallBlindIdx = (this.dealer + 1) % this.playerSize
         const bigBlindIdx = (this.dealer + 2) % this.playerSize
         this.players[smallBlindIdx].money -= this.smallBlind
+        this.players[smallBlindIdx].bet += this.smallBlind
         this.players[bigBlindIdx].money -= this.bigBlind
+        this.players[bigBlindIdx].bet += this.bigBlind
         this.poolPrize = this.bigBlind + this.smallBlind
         this.waitingPlayer = (this.dealer + 3) % this.playerSize
         this.highestBet = this.bigBlind

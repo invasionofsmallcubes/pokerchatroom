@@ -1,12 +1,15 @@
-# Stuff to do:    
+# Stuff to do:
+    ☐ block betting after winning
+    ☐ calculate winning player
+    ☐ move betting inside player
+    ☐ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck)
+    ☐ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver)
     ✔ watch this video to understand [rooms](https://youtu.be/UymGJnv-WsE) @done(20-03-18 17:47)
     ✔ put all strings in encoded format with variables inside the strings @done(20-04-03 19:11)
-    ☐ create texas holdem engine (this doesn't look it's found anywhere the way I like it)
+    ✔ create texas holdem engine (this doesn't look it's found anywhere the way I like it) @done(20-04-06 09:16)
         This follows the following steps:
             Player 4 – Calls the big blind (25¢)
             Player 5 – folds
             Player 1 – Calls the big blind (25¢)
             Player 2 – Calls the big blind (since they already have 10¢ bet, they only have to add another 15¢, for a total of 25¢)
             Player 3 – Checks (since they already have the bet matched, they do not need to add more money to call; this is called checking)        
-    ☐ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck)
-    ☐ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver)

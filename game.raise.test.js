@@ -27,6 +27,7 @@ test("I cannot bet on the game, if it's not my turn", () => {
 test("I can bet on the game, if it's my turn", () => {
   const gameState = game.raise(15, user)
   expect(game.lookupPlayer(user).money).toBe(85)
+  expect(game.lookupPlayer(user).bet).toBe(15)
   expect(game.poolPrize).toBe(30)
   expect(gameState.room).toBe(room)
   expect(gameState.bettingPlayerName).toBe('name')
