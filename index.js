@@ -1,10 +1,10 @@
 const app = require('express')()
-const http = require('http')
-  .Server(app)
+const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const User = require('./user')
 const Game = require('./game')
 const Chat = require('./chat')
+const PokerDeck = require('./pokerDeck')
 
 const port = process.env.PORT || 3000
 const debug = process.env.DEBUG || true
@@ -18,8 +18,7 @@ const users = {}
 const games = {}
 
 function generate() {
-  return new Date().getTime()
-    .toString(36)
+  return new Date().getTime().toString(36)
 }
 
 function changeRoom(socket, roomId, chat) {
@@ -37,7 +36,7 @@ function addPlayerToGame(player, id) {
 }
 
 function createGame(owner, id) {
-  games[id] = Game(owner, id)
+  games[id] = Game(owner, id, PokerDeck())
   addPlayerToGame(owner, id)
 }
 

@@ -8,13 +8,27 @@ const user3 = User('name3', room, 'id3')
 
 let game
 
+const pokerDeck = function PokerDeck() {
+  return {
+    drawTwoCards() {
+      return ['1', '2']
+    },
+    drawThreeCards() {
+      return ['3', '4', '5']
+    },
+    drawOneCard() {
+      return '6'
+    },
+  }
+}
+
 beforeEach(() => {
   const winnerCalculator = function WinnerCalculator() {
     return {
       calculateWinningPlayer: () => 2,
     }
   }
-  game = Game(user, room, winnerCalculator())
+  game = Game(user, room, pokerDeck(), winnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

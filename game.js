@@ -10,7 +10,7 @@ const WinningState = require('./winningState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
 
-function Game(owner, id, winnerCalculator) {
+function Game(owner, id, deck, winnerCalculator) {
   return {
     owner,
     id,

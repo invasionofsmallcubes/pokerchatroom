@@ -4,7 +4,9 @@
   "description": "my first socket.io app",
   "repository": "https://github.com/invasionofsmallcubes/pokerchatroom",
   "dependencies": {
+    "card-deck": "^1.0.1",
     "express": "^4.15.2",
+    "pokersolver": "^2.1.3",
     "socket.io": "^2.3.0"
   },
   "scripts": {

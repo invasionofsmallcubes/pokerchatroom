@@ -14,12 +14,26 @@ const winnerCalculator = function WinnerCalculator() {
   }
 }
 
+const pokerDeck = function PokerDeck() {
+  return {
+    drawTwoCards() {
+      return ['1', '2']
+    },
+    drawThreeCards() {
+      return ['3', '4', '5']
+    },
+    drawOneCard() {
+      return '6'
+    },
+  }
+}
+
 let game
 
 const winCalc = winnerCalculator()
 
 beforeEach(() => {
-  game = Game(user, room, winCalc)
+  game = Game(user, room, pokerDeck(), winCalc)
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)
