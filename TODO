@@ -4,7 +4,7 @@
     ☐ prize split in case of tie
     ☐ plan next round
     ☐ add !table command
-    ☐ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver)
+    ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)
     ✔ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck) @done(20-04-06 19:54)
     ✔ calculate winning player @done(20-04-06 19:05)
     ✔ watch this video to understand [rooms](https://youtu.be/UymGJnv-WsE) @done(20-03-18 17:47)

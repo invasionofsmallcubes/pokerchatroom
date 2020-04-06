@@ -5,7 +5,7 @@ function Chat() {
     // eslint-disable-next-line no-unused-vars
     game: jest.fn((roomName, message) => {}),
     // eslint-disable-next-line no-unused-vars
-    toSelf: jest.fn((id, message) => {})
+    toSelf: jest.fn((id, message) => {}),
   }
 }
 const room = 'room'
@@ -21,7 +21,7 @@ test('I can send messages', () => {
     'nextMoveFrom',
     [
       { id: 'id', cards: ['1', '2'] },
-      { id: 'id2', cards: ['1', '2'] }
+      { id: 'id2', cards: ['1', '2'] },
     ]
   )
   const chat = Chat()
@@ -46,7 +46,7 @@ test('I can send messages', () => {
 
   expect(chat.toSelf.mock.calls.length).toBe(2)
   expect(chat.toSelf.mock.calls[0][0]).toBe('id')
-  expect(chat.toSelf.mock.calls[0][1]).toBe('Your hand is 1 and 2')
+  expect(chat.toSelf.mock.calls[0][1]).toBe('Your hand is 1,2')
   expect(chat.toSelf.mock.calls[1][0]).toBe('id2')
-  expect(chat.toSelf.mock.calls[1][1]).toBe('Your hand is 1 and 2')
+  expect(chat.toSelf.mock.calls[1][1]).toBe('Your hand is 1,2')
 })

@@ -1,3 +1,5 @@
+const CardPrettiefier = require('./cardPrettifier')
+
 function BootstrapState(
   startedBy,
   roomId,
@@ -31,11 +33,11 @@ function BootstrapState(
         const hand = this.hands[i]
         chat.toSelf(
           hand.id,
-          `Your hand is ${hand.cards[0]} and ${hand.cards[1]}`
+          `Your hand is ${CardPrettiefier().prettify(hand.cards)}`
         )
       }
       chat.game(this.roomId, `Waiting for move from ${this.nextMoveFrom}`)
-    }
+    },
   }
 }
 

@@ -1,108 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>PockerChatRoom</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
+    />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css"
+    />
+    <style>
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
 
-<head>
-  <title>PockerChatRoom</title>
-  <style>
-    #messages {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
+      #messages li {
+        padding: 5px 10px;
+        font-size: 25px;
+      }
 
-    #messages li {
-      padding: 5px 10px;
-    }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
 
-    #messages li:nth-child(odd) {
-      background: #eee;
-    }
+      #messages {
+        margin-bottom: 40px;
+      }
 
-    #messages {
-      margin-bottom: 40px
-    }
+      .frm {
+        display: flex;
+        margin-right: 2px;
+        margin-left: 4px;
+      }
 
-    .frm {
-      display: flex;
-      margin-right: 2px;
-      margin-left: 4px;
-    }
-  </style>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css" />
-</head>
+      .description > * {
+        font-size: 20px;
+      }
+    </style>
+  </head>
 
-<body>
-  <div>
-    <p>What you can do:</p>
-    <ul>
-      <li>send a normal message</li>
-      <li>send a command, you need to put a ! in front of the command:
-        <ul>
-          <li>
-            <pre>!create</pre> allows you to create a new match. The bot will give a code to send to your friend
-          </li>
-          <li>
-            <pre>!join $code</pre> allows you to join a match. Only the owner can start a match.
-          </li>
-        </ul>
-    </ul>
-  </div>
-  <ul id="messages"></ul>
-  <form action="" class="frm">
-    <div class="mdl-textfield mdl-js-textfield">
-      <input class="mdl-textfield__input" type="text" id="m" autocomplete="off">
-      <label class="mdl-textfield__label" for="sample1">Write something...</label>
+  <body>
+    <div class="description">
+      <p>What you can do:</p>
+      <ul>
+        <li>send a normal message</li>
+        <li>
+          send a command, you need to put a ! in front of the command:
+          <ul>
+            <li>
+              <pre>!create</pre>
+              allows you to create a new match. The bot will give a code to send
+              to your friend
+            </li>
+            <li>
+              <pre>!join $code</pre>
+              allows you to join a match. Only the owner can start a match.
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
-      <i class="material-icons">send</i>
-    </button>
-  </form>
-  <script>
-    const CHAT_MESSAGE = 'chat-message';
-    const GAME_MESSAGE = 'game-message';
-    const PERSONAL_MESSAGE = 'personal-message';
-    const ERROR_MESSAGE = 'error-message';
-    const INIT_USER = 'init-user';
-    const CMD = 'cmd';
-    const GENERAL_ROOM = 'generalRoom';
+    <ul id="messages"></ul>
+    <form action="" class="frm">
+      <div class="mdl-textfield mdl-js-textfield">
+        <input
+          class="mdl-textfield__input"
+          type="text"
+          id="m"
+          autocomplete="off"
+        />
+        <label class="mdl-textfield__label" for="sample1"
+          >Write something...</label
+        >
+      </div>
+      <button
+        class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+      >
+        <i class="material-icons">send</i>
+      </button>
+    </form>
+    <script>
+      const CHAT_MESSAGE = 'chat-message'
+      const GAME_MESSAGE = 'game-message'
+      const PERSONAL_MESSAGE = 'personal-message'
+      const ERROR_MESSAGE = 'error-message'
+      const INIT_USER = 'init-user'
+      const CMD = 'cmd'
+      const GENERAL_ROOM = 'generalRoom'
 
-    $(function () {
-      var socket = io();
-      const name = prompt('Tell me your name');
-      socket.emit(INIT_USER, name);
-      $('form').submit(function () {
-        const message = $('#m').val();
-        if (message.startsWith('!')) {
-          socket.emit(CMD, message);
-        } else {
-          socket.emit(CHAT_MESSAGE, message);
-        }
-        $('#m').val('');
-        return false;
-      });
-      socket.on(CHAT_MESSAGE, function (msg) {
-        $('#messages').append($('<li>').text(msg));
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-      socket.on(ERROR_MESSAGE, function (msg) {
-        $('#messages').append($('<li>').html(`<b>${msg}</b>`));
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-      socket.on(GAME_MESSAGE, function (msg) {
-        $('#messages').append($('<li>').html(`<i>${msg}</i>`));
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-      socket.on(PERSONAL_MESSAGE, function (msg) {
-        $('#messages').append($('<li>').html(`<u>${msg}</u>`));
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-    });
-  </script>
-</body>
-
+      $(function () {
+        var socket = io()
+        const name = prompt('Tell me your name')
+        socket.emit(INIT_USER, name)
+        $('form').submit(function () {
+          const message = $('#m').val()
+          if (message.startsWith('!')) {
+            socket.emit(CMD, message)
+          } else {
+            socket.emit(CHAT_MESSAGE, message)
+          }
+          $('#m').val('')
+          return false
+        })
+        socket.on(CHAT_MESSAGE, function (msg) {
+          $('#messages').append($('<li>').text(msg))
+          window.scrollTo(0, document.body.scrollHeight)
+        })
+        socket.on(ERROR_MESSAGE, function (msg) {
+          $('#messages').append($('<li>').html(`<b>${msg}</b>`))
+          window.scrollTo(0, document.body.scrollHeight)
+        })
+        socket.on(GAME_MESSAGE, function (msg) {
+          $('#messages').append($('<li>').html(`<i>${msg}</i>`))
+          window.scrollTo(0, document.body.scrollHeight)
+        })
+        socket.on(PERSONAL_MESSAGE, function (msg) {
+          $('#messages').append($('<li>').html(`<u>${msg}</u>`))
+          window.scrollTo(0, document.body.scrollHeight)
+        })
+      })
+    </script>
+  </body>
 </html>

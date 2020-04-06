@@ -27,17 +27,7 @@ function Game(owner, id, deck, winnerCalculator) {
     winnerCalculator,
     // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
-    deck: {
-      drawTwoCards() {
-        return ['1', '2']
-      },
-      drawThreeCards() {
-        return ['3', '4', '5']
-      },
-      drawOneCard() {
-        return '6'
-      },
-    },
+    deck,
     addPlayer(user) {
       if (this.hasNotStartedYet) {
         this.players.push(Player(user, 100))
@@ -133,7 +123,7 @@ function Game(owner, id, deck, winnerCalculator) {
             user.name,
             this.id,
             this.calculateNextStep(),
-            this.highestBet,
+            moneyToAdd,
             this.poolPrize
           )
         }

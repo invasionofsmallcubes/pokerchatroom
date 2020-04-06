@@ -9,8 +9,22 @@ const user3 = User('name3', room, 'id3')
 
 let game
 
+const pokerDeck = function PokerDeck() {
+  return {
+    drawTwoCards() {
+      return ['1', '2']
+    },
+    drawThreeCards() {
+      return ['3', '4', '5']
+    },
+    drawOneCard() {
+      return '6'
+    },
+  }
+}
+
 beforeEach(() => {
-  game = Game(user, room)
+  game = Game(user, room, pokerDeck())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)
@@ -29,6 +43,7 @@ test('I can call the higher bet on the table', () => {
   )
   expect(state.poolPrize).toBe(25)
 })
+
 test('I can call the higher bet on the table', () => {
   const state = game.call(user)
   expect(state.room).toBe('room')
@@ -37,6 +52,14 @@ test('I can call the higher bet on the table', () => {
   expect(state.nextState.room).toBe(room)
   expect(state.nextState.nextPlayerName).toBe('name2')
   expect(state.poolPrize).toBe(25)
+
+  const state2 = game.call(user2)
+  expect(state2.room).toBe('room')
+  expect(state2.callingPlayer).toBe('name2')
+  expect(state2.amount).toBe(5)
+  expect(state2.nextState.room).toBe(room)
+  expect(state2.nextState.nextPlayerName).toBe('name3')
+  expect(state2.poolPrize).toBe(30)
 })
 
 test('I can call the higher bet on the table and it becomes a check', () => {

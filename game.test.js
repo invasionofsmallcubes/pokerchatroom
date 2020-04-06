@@ -1,10 +1,23 @@
 const Game = require('./game')
 const User = require('./user')
 
+const pokerDeck = function PokerDeck() {
+  return {
+    drawTwoCards() {
+      return ['1', '2']
+    },
+    drawThreeCards() {
+      return ['3', '4', '5']
+    },
+    drawOneCard() {
+      return '6'
+    },
+  }
+}
 const room = 'room'
 const user = User('name', room, 'id')
 const user2 = User('name2', room, 'id2')
-const game = Game(user, room)
+const game = Game(user, room, pokerDeck())
 game.addPlayer(user)
 game.addPlayer(user2)
 
