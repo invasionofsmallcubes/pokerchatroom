@@ -64,6 +64,7 @@ test('I am able to compute the showdown', () => {
   expect(game.currentStep).toBe(4)
   expect(winningState.nextState.winnerPlayer).toBe('name3')
   expect(winningState.nextState.room).toBe(room)
+  expect(winningState.nextState.money).toBe(30)
   expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
   expect(game.poolPrize).toBe(30)
   expect(winCalc.calculateWinningPlayer.mock.calls.length).toBe(1)

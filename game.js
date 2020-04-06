@@ -82,15 +82,14 @@ function Game(owner, id, deck, winnerCalculator) {
       if (this.everyPlayerHasFolded()) {
         const winner = this.playerNotFolding()
         winner.money += this.poolPrize
-        this.poolPrize = 0
-        return WinningState(winner.user.name, this.id)
+        return WinningState(winner.user.name, this.poolPrize, this.id)
       }
       if (this.lastPlayerInTurn === this.waitingPlayer) {
         if (this.currentStep === 3) {
           this.currentStep += 1
           const p = this.calculateWinningPlayer()
           p.money += this.poolPrize
-          return WinningState(p.user.name, this.id)
+          return WinningState(p.user.name, this.poolPrize, this.id)
         }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()

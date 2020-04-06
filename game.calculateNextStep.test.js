@@ -114,7 +114,7 @@ test("if everybody folds, the last one that didn't fold wins", () => {
   game.fold(user)
   const winningState = game.fold(user2)
   expect(winningState.nextState.winnerPlayer).toBe('name3')
+  expect(winningState.nextState.money).toBe(15)
   expect(winningState.nextState.room).toBe(room)
   expect(game.lookupPlayer(user3).money).toBe(105)
-  expect(game.poolPrize).toBe(0)
 })
