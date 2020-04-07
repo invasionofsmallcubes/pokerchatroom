@@ -6,7 +6,7 @@ const CallState = require('./callState')
 const BootstrapState = require('./bootstrapState')
 const WaitingState = require('./waitingState')
 const RaiseState = require('./raiseState')
-const WinningState = require('./winningState')
+const WinningMultiState = require('./winningMultiState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
 
@@ -42,7 +42,7 @@ function Game(owner, id, deck, winnerCalculator) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
-    calculateWinningPlayer() {
+    calculateWinningPlayers() {
       const cardExaminations = []
       for (let i = 0; i < this.players.length; i += 1) {
         const player = this.players[i]
@@ -52,9 +52,10 @@ function Game(owner, id, deck, winnerCalculator) {
           cardExaminations.push(CardExamination(i, hand))
         }
       }
-      return this.players[
-        this.winnerCalculator.calculateWinningPlayer(cardExaminations)
-      ]
+      const winners = this.winnerCalculator.calculateWinningPlayer(
+        cardExaminations
+      )
+      return winners
     },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
@@ -82,14 +83,18 @@ function Game(owner, id, deck, winnerCalculator) {
       if (this.everyPlayerHasFolded()) {
         const winner = this.playerNotFolding()
         winner.money += this.poolPrize
-        return WinningState(winner.user.name, this.poolPrize, this.id)
+        return WinningMultiState([winner], this.id)
       }
       if (this.lastPlayerInTurn === this.waitingPlayer) {
         if (this.currentStep === 3) {
           this.currentStep += 1
-          const p = this.calculateWinningPlayer()
-          p.money += this.poolPrize
-          return WinningState(p.user.name, this.poolPrize, this.id)
+          const winners = this.calculateWinningPlayers()
+          const players = winners.map((w) => this.players[w.playerId])
+          const splitMoney = this.poolPrize / players.length
+          for (let i = 0; i < players.length; i += 1) {
+            players[i].money += splitMoney
+          }
+          return WinningMultiState(players, this.id)
         }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()

@@ -25,7 +25,7 @@ const pokerDeck = function PokerDeck() {
 beforeEach(() => {
   const winnerCalculator = function WinnerCalculator() {
     return {
-      calculateWinningPlayer: () => 2,
+      calculateWinningPlayer: () => [{ playerId: 2 }],
     }
   }
   game = Game(user, room, pokerDeck(), winnerCalculator())
@@ -104,7 +104,8 @@ test('I am able to compute the showdown', () => {
   const winningState = game.call(user3)
 
   expect(game.currentStep).toBe(4)
-  expect(winningState.nextState.winnerPlayer).toBe('name3')
+  expect(winningState.nextState.winnerPlayers[0].user.name).toBe('name3')
+  expect(winningState.nextState.winnerPlayers[0].money).toBe(120)
   expect(winningState.nextState.room).toBe(room)
   expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
   expect(game.poolPrize).toBe(30)
@@ -113,8 +114,7 @@ test('I am able to compute the showdown', () => {
 test("if everybody folds, the last one that didn't fold wins", () => {
   game.fold(user)
   const winningState = game.fold(user2)
-  expect(winningState.nextState.winnerPlayer).toBe('name3')
-  expect(winningState.nextState.money).toBe(15)
+  expect(winningState.nextState.winnerPlayers[0].user.name).toBe('name3')
+  expect(winningState.nextState.winnerPlayers[0].money).toBe(105)
   expect(winningState.nextState.room).toBe(room)
-  expect(game.lookupPlayer(user3).money).toBe(105)
 })
