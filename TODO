@@ -1,9 +1,13 @@
 # Stuff to do:
     ☐ block betting after winning
     ☐ move betting inside player
-    ☐ prize split in case of tie
     ☐ plan next round
     ☐ add !table command
+    ☐ nicer UI
+        help screen
+        tables
+    ✔ remove jquery @done(20-04-08 04:30)
+    ✔ prize split in case of tie @done(20-04-07 18:29)
     ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)
     ✔ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck) @done(20-04-06 19:54)
     ✔ calculate winning player @done(20-04-06 19:05)

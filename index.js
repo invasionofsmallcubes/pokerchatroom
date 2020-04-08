@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  const chat = Chat(io)
+  const chat = Chat(io, socket)
   let currentUser
 
   socket.on(INIT_USER, (name) => {

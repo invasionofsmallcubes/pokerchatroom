@@ -3,7 +3,6 @@
   <head>
     <title>PockerChatRoom</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -71,7 +70,7 @@
       </ul>
     </div>
     <ul id="messages"></ul>
-    <form action="" class="frm">
+    <form id="myForm" action="" class="frm">
       <div class="mdl-textfield mdl-js-textfield">
         <input
           class="mdl-textfield__input"
@@ -92,42 +91,59 @@
     <script>
       const CHAT_MESSAGE = 'chat-message'
       const GAME_MESSAGE = 'game-message'
+      const CHAT_MESSAGE_SELF = 'chat-message-self'
       const PERSONAL_MESSAGE = 'personal-message'
       const ERROR_MESSAGE = 'error-message'
       const INIT_USER = 'init-user'
       const CMD = 'cmd'
       const GENERAL_ROOM = 'generalRoom'
 
-      $(function () {
-        var socket = io()
-        const name = prompt('Tell me your name')
-        socket.emit(INIT_USER, name)
-        $('form').submit(function () {
-          const message = $('#m').val()
-          if (message.startsWith('!')) {
-            socket.emit(CMD, message)
-          } else {
-            socket.emit(CHAT_MESSAGE, message)
-          }
-          $('#m').val('')
-          return false
-        })
-        socket.on(CHAT_MESSAGE, function (msg) {
-          $('#messages').append($('<li>').text(msg))
-          window.scrollTo(0, document.body.scrollHeight)
-        })
-        socket.on(ERROR_MESSAGE, function (msg) {
-          $('#messages').append($('<li>').html(`<b>${msg}</b>`))
-          window.scrollTo(0, document.body.scrollHeight)
-        })
-        socket.on(GAME_MESSAGE, function (msg) {
-          $('#messages').append($('<li>').html(`<i>${msg}</i>`))
-          window.scrollTo(0, document.body.scrollHeight)
-        })
-        socket.on(PERSONAL_MESSAGE, function (msg) {
-          $('#messages').append($('<li>').html(`<u>${msg}</u>`))
-          window.scrollTo(0, document.body.scrollHeight)
-        })
+      var socket = io()
+      const name = window.prompt('Tell me your name')
+      socket.emit(INIT_USER, name)
+
+      const form = document.getElementById('myForm')
+      form.addEventListener('submit', function (evt) {
+        evt.preventDefault()
+        const message = document.getElementById('m').value
+        if (message.startsWith('!')) {
+          socket.emit(CMD, message)
+        } else {
+          socket.emit(CHAT_MESSAGE, message)
+        }
+        document.getElementById('m').value = ''
+        return false
+      })
+      const messagesDiv = document.getElementById('messages')
+      socket.on(CHAT_MESSAGE, function (msg) {
+        const li = document.createElement('li')
+        li.textContent = msg
+        messagesDiv.appendChild(li)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on(CHAT_MESSAGE_SELF, function (msg) {
+        const li = document.createElement('li')
+        li.textContent = `You said: ${msg}`
+        messagesDiv.appendChild(li)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on(ERROR_MESSAGE, function (msg) {
+        const li = document.createElement('li')
+        li.innerHTML = `<span><i>only visible to you</i><br/></span><b>${msg}</b>`
+        messagesDiv.appendChild(li)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on(GAME_MESSAGE, function (msg) {
+        const li = document.createElement('li')
+        li.innerHTML = `<i>${msg}</i>`
+        messagesDiv.appendChild(li)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on(PERSONAL_MESSAGE, function (msg) {
+        const li = document.createElement('li')
+        li.innerHTML = `<span><i>only visible to you</i><br/></span>${msg}`
+        messagesDiv.appendChild(li)
+        window.scrollTo(0, document.body.scrollHeight)
       })
     </script>
   </body>
