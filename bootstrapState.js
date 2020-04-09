@@ -1,5 +1,7 @@
 const CardPrettiefier = require('./cardPrettifier')
 
+const BOOTSTRAP_STATE = 'bootstrap-state'
+
 function BootstrapState(
   startedBy,
   roomId,
@@ -31,10 +33,12 @@ function BootstrapState(
       chat.game(this.roomId, 'Dealing cards...')
       for (let i = 0; i < this.hands.length; i += 1) {
         const hand = this.hands[i]
+        const cards = CardPrettiefier().prettify(hand.cards)
         chat.toSelf(
           hand.id,
-          `Your hand is ${CardPrettiefier().prettify(hand.cards)}`
+          `Your hand is ${cards}`
         )
+        chat.toSelfInTopic(hand.id, { cards, prize: this.poolPrize }, BOOTSTRAP_STATE)
       }
       chat.game(this.roomId, `Waiting for move from ${this.nextMoveFrom}`)
     },

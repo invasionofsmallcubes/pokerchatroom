@@ -110,6 +110,9 @@
         bottom: 0;
         max-height: 400px;
       }
+      .playground {
+        display: none;
+      }
     </style>
   </head>
 
@@ -140,7 +143,7 @@
       </div>
       <div class="chatbox">
         <div class="formello">
-          <div id="playground" class="divTable">
+          <div id="playground" class="divTable playground">
             <div class="divTableBody">
               <div class="divTableRow">
                 <div class="divTableCell">Your Hand</div>
@@ -201,6 +204,8 @@
       const INIT_USER = "init-user";
       const CMD = "cmd";
       const GENERAL_ROOM = "generalRoom";
+      const CHAT_UPDATE_ROOM = "chat-update-room";
+      const BOOTSTRAP_STATE = "bootstrap-state";
 
       function elem(id) {
         return document.getElementById(id);
@@ -240,6 +245,14 @@
         return false;
       });
       const messagesDiv = elem("messages");
+      socket.on(CHAT_UPDATE_ROOM, function (roomId) {
+        elem("room").textContent = roomId;
+        elem("playground").style.display = "block";
+      });
+      socket.on(BOOTSTRAP_STATE, function (msg) {
+        elem("hand").textContent = msg.cards;
+        elem("your-money").textContent = msg.prize;
+      });
       socket.on(CHAT_MESSAGE, function (msg) {
         addMessage(messagesDiv, `${msg.name}: ${msg.msg}`);
         window.scrollTo(0, document.body.scrollHeight);
@@ -251,7 +264,7 @@
       socket.on(ERROR_MESSAGE, function (msg) {
         addMessage(
           messagesDiv,
-          `<span><i>only visible to you</i><br/></span><b>${msg}</b>`
+          `<span style="font-size:14px;">only visible to you<br/></span><b>${msg}</b>`
         );
         window.scrollTo(0, document.body.scrollHeight);
       });

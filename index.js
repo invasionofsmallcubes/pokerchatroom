@@ -14,6 +14,7 @@ const CHAT_MESSAGE = 'chat-message'
 const INIT_USER = 'init-user'
 const CMD = 'cmd'
 const GENERAL_ROOM = 'generalRoom'
+const CHAT_UPDATE_ROOM = 'chat-update-room'
 
 const users = {}
 const games = {}
@@ -28,7 +29,8 @@ function changeRoom(socket, roomId, chat) {
   const { name } = users[socket.id]
   delete users[socket.id]
   users[socket.id] = User(name, roomId, socket.id)
-  chat.toSelf(socket.id, `I will move you on the new room ${roomId}...`)
+  chat.toSelf(socket.id, `I will move you on the new room ${roomId} (pass this code to your friends)`)
+  chat.toSelfInTopic(socket.id, roomId, CHAT_UPDATE_ROOM)
   return users[socket.id]
 }
 
