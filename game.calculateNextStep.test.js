@@ -1,5 +1,10 @@
 const Game = require('./game')
 const User = require('./user')
+const WinningMultiState = require('./winningMultiState')
+const Player = require('./player')
+const WaitingState = require('./waitingState')
+const NextState = require('./nextState')
+const CheckingState = require('./checkingState')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -7,6 +12,13 @@ const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
 
 let game
+
+function aWinningState(money) {
+  const p = Player(user3, money)
+  p.bet = 10
+  p.hand = ['1', '2']
+  return WinningMultiState([p], room)
+}
 
 const pokerDeck = function PokerDeck() {
   return {
@@ -39,9 +51,12 @@ test('I am able to compute flop', () => {
   game.call(user)
   game.call(user2)
   const nextState = game.call(user3)
-  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
-  expect(nextState.nextState.room).toBe(room)
-  expect(nextState.nextState.cards).toEqual(['3', '4', '5'])
+
+  const ws = WaitingState(room, user.name)
+  const ns = NextState(['3', '4', '5'], room, ws)
+  const cs = CheckingState(user3.name, room, ns)
+
+  expect(JSON.stringify(nextState)).toBe(JSON.stringify(cs))
   expect(game.cardsOnTable).toEqual(['3', '4', '5'])
   expect(game.currentStep).toBe(1)
 })
@@ -104,9 +119,8 @@ test('I am able to compute the showdown', () => {
   const winningState = game.call(user3)
 
   expect(game.currentStep).toBe(4)
-  expect(winningState.nextState.winnerPlayers[0].user.name).toBe('name3')
-  expect(winningState.nextState.winnerPlayers[0].money).toBe(120)
-  expect(winningState.nextState.room).toBe(room)
+
+  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(120)))
   expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
   expect(game.poolPrize).toBe(30)
 })
@@ -114,7 +128,6 @@ test('I am able to compute the showdown', () => {
 test("if everybody folds, the last one that didn't fold wins", () => {
   game.fold(user)
   const winningState = game.fold(user2)
-  expect(winningState.nextState.winnerPlayers[0].user.name).toBe('name3')
-  expect(winningState.nextState.winnerPlayers[0].money).toBe(105)
-  expect(winningState.nextState.room).toBe(room)
+
+  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(105)))
 })
