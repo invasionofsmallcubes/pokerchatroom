@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on(CHAT_MESSAGE, (msg) => {
-    chat.room(currentUser.room, `${currentUser.name}: ${msg}`)
+    chat.room(currentUser.room, { name: currentUser.name, msg: msg })
   })
 
   socket.on(CMD, (command) => {
