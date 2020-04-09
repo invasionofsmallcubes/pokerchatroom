@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link
+      rel="stylesheet"
+      href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      type="text/css"
+    />
     <title>PockerChatRoom</title>
     <script src="/socket.io/socket.io.js"></script>
     <link
@@ -23,6 +28,11 @@
 
       .main-container * {
         font-size: 30px;
+        font: "Roboto";
+      }
+
+      .description {
+        display: none;
       }
 
       #messages {
@@ -64,7 +74,8 @@
       .divTableHead {
         border: 1px solid #999999;
         display: table-cell;
-        padding: 3px 10px;
+        padding: 10px;
+        font-size: 35px;
       }
       .divTableHeading {
         background-color: #eee;
@@ -79,66 +90,107 @@
       .divTableBody {
         display: table-row-group;
       }
+      .miniformello div {
+        padding: 2px;
+      }
+      .miniformello {
+        display: flex;
+        padding: 10px;
+        width: 100%;
+      }
+      #chatbox {
+        overflow: none;
+        position: relative;
+        width: 100%;
+        height: 400px;
+      }
+      #chatmessages {
+        overflow: auto;
+        position: absolute;
+        bottom: 0;
+        max-height: 400px;
+      }
     </style>
   </head>
 
   <body>
     <div class="main-container">
-      <div class="description">
-        <p>What you can do:</p>
-        <ul>
-          <li>send a normal message</li>
-          <li>
-            send a command, you need to put a ! in front of the command:
-            <ul>
-              <li>
-                <pre>!create</pre>
-                allows you to create a new match. The bot will give a code to
-                send to your friend
-              </li>
-              <li>
-                <pre>!join $code</pre>
-                allows you to join a match. Only the owner can start a match.
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <div class="chatmessages">
+        <ul id="messages"></ul>
+        <div id="description" class="description">
+          <p>What you can do:</p>
+          <ul>
+            <li>send a normal message</li>
+            <li>
+              send a command, you need to put a ! in front of the command:
+              <ul>
+                <li>
+                  <pre>!create</pre>
+                  allows you to create a new match. The bot will give a code to
+                  send to your friends.
+                </li>
+                <li>
+                  <pre>!join $code</pre>
+                  allows you to join a match. Only the owner can start a match.
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-      <ul id="messages"></ul>
-      <div class="divTable">
-        <div class="divTableBody">
-          <div class="divTableRow">
-            <div class="divTableCell">Your Hand</div>
-            <div class="divTableCell">Cards on the table</div>
-            <div class="divTableCell">Pot</div>
-            <div class="divTableCell">Your money</div>
+      <div class="chatbox">
+        <div class="formello">
+          <div id="playground" class="divTable">
+            <div class="divTableBody">
+              <div class="divTableRow">
+                <div class="divTableCell">Your Hand</div>
+                <div class="divTableCell">Cards on the table</div>
+                <div class="divTableCell">Prize</div>
+                <div class="divTableCell">Money</div>
+                <div class="divTableCell">Room</div>
+              </div>
+              <div class="divTableRow">
+                <div id="hand" class="divTableCell">&nbsp;</div>
+                <div id="table" class="divTableCell">&nbsp;</div>
+                <div id="pot" class="divTableCell">&nbsp;</div>
+                <div id="your-money" class="divTableCell">&nbsp;</div>
+                <div id="room" class="divTableCell">&nbsp;</div>
+              </div>
+            </div>
           </div>
-          <div class="divTableRow">
-            <div id="hand" class="divTableCell">&nbsp;</div>
-            <div id="table" class="divTableCell">&nbsp;</div>
-            <div id="pot" class="divTableCell">&nbsp;</div>
-            <div id="your-money" class="divTableCell">&nbsp;</div>
+          <div id="miniformello" class="miniformello">
+            <div>
+              <button
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+                id="help"
+              >
+                <i id="help-button" class="material-icons">help_outline</i>
+              </button>
+            </div>
+            <div style="width: 100%;">
+              <form id="myForm" action="" class="frm">
+                <div
+                  class="mdl-textfield mdl-js-textfield"
+                  style="width: 100%;"
+                >
+                  <input
+                    class="mdl-textfield__input"
+                    type="text"
+                    id="m"
+                    autocomplete="off"
+                  />
+                  <label class="mdl-textfield__label" for="sample1" />
+                </div>
+                <button
+                  class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+                >
+                  <i class="material-icons">send</i>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-      <form id="myForm" action="" class="frm">
-        <div class="mdl-textfield mdl-js-textfield">
-          <input
-            class="mdl-textfield__input"
-            type="text"
-            id="m"
-            autocomplete="off"
-          />
-          <label class="mdl-textfield__label" for="sample1"
-            >Write something...</label
-          >
-        </div>
-        <button
-          class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-        >
-          <i class="material-icons">send</i>
-        </button>
-      </form>
     </div>
     <script>
       const CHAT_MESSAGE = "chat-message";
@@ -163,6 +215,17 @@
       var socket = io();
       const name = window.prompt("Tell me your name");
       socket.emit(INIT_USER, name);
+
+      const help = elem("help");
+      help.addEventListener("click", function () {
+        const display = elem("description").style.display;
+        elem("description").style.display =
+          display === "block" ? "none" : "block";
+        const text = elem("help-button").textContent;
+        elem("help-button").textContent =
+          text === "help" ? "help_outline" : "help";
+        window.scrollTo(0, document.body.scrollHeight);
+      });
 
       const form = elem("myForm");
       form.addEventListener("submit", function (evt) {
