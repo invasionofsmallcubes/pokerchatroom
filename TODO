@@ -1,12 +1,11 @@
 # Stuff to do:
     ☐ block betting after winning
-    ☐ change font size
     ☐ move betting inside player
     ☐ plan next round
-    ☐ add !table command
     ☐ nicer UI
-        help screen
-        tables
+        ☐ change font size
+        ☐ help screen
+        ✔ tables @done(20-04-11 19:22)
     ✔ remove jquery @done(20-04-08 04:30)
     ✔ prize split in case of tie @done(20-04-07 18:29)
     ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)
