@@ -41,7 +41,5 @@ test('I can bootstrap a game', () => {
 test("I can't bootstrap a game if not started by the owner", () => {
   const errorState = game.bootstrapGame(user2)
   expect(errorState.room).toBe(user2.id)
-  expect(errorState.message).toBe(
-    'You cannot start a game that you did not create'
-  )
+  expect(errorState.message).toBe('You cannot start a game that you did not create')
 })

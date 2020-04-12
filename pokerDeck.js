@@ -3,21 +3,7 @@ const Deck = require('card-deck')
 function PokerDeck() {
   const deck = new Deck()
   const seeds = ['c', 'h', 's', 'd']
-  const value = [
-    'A',
-    'K',
-    'Q',
-    'J',
-    'T',
-    '9',
-    '8',
-    '7',
-    '6',
-    '5',
-    '4',
-    '3',
-    '2',
-  ]
+  const value = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
   const cards = []
   for (let i = 0; i < seeds.length; i += 1) {
     for (let j = 0; j < value.length; j += 1) {

@@ -52,22 +52,16 @@ function Game(owner, id, deck, winnerCalculator) {
           cardExaminations.push(CardExamination(i, hand))
         }
       }
-      const winners = this.winnerCalculator.calculateWinningPlayer(
-        cardExaminations
-      )
+      const winners = this.winnerCalculator.calculateWinningPlayer(cardExaminations)
       return winners
     },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
         // eslint-disable-next-line operator-linebreak
-        const temporaryWaitingPlayer =
-          (this.waitingPlayer + i) % this.playerSize
+        const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
           this.waitingPlayer = temporaryWaitingPlayer
-          return WaitingState(
-            this.id,
-            this.players[temporaryWaitingPlayer].user.name
-          )
+          return WaitingState(this.id, this.players[temporaryWaitingPlayer].user.name)
         }
       }
       return ErrorState(this.id, 'Not found a next player')
@@ -108,10 +102,7 @@ function Game(owner, id, deck, winnerCalculator) {
     },
     pokerAction(user, actionName, singlePokerAction) {
       if (!this.isPlayerInTurn(user)) {
-        return ErrorState(
-          user.id,
-          `You cannot !${actionName} because it's not your turn`
-        )
+        return ErrorState(user.id, `You cannot !${actionName} because it's not your turn`)
       }
       return singlePokerAction(user)
     },
@@ -123,13 +114,7 @@ function Game(owner, id, deck, winnerCalculator) {
           currentPlayer.money -= moneyToAdd
           currentPlayer.bet += moneyToAdd
           this.poolPrize += moneyToAdd
-          return CallState(
-            user.name,
-            this.id,
-            this.calculateNextStep(),
-            moneyToAdd,
-            this.poolPrize
-          )
+          return CallState(user.name, this.id, this.calculateNextStep(), moneyToAdd, this.poolPrize)
         }
         return CheckingState(user.name, this.id, this.calculateNextStep())
       })
@@ -185,10 +170,7 @@ function Game(owner, id, deck, winnerCalculator) {
           }))
         )
       }
-      return ErrorState(
-        userAsking.id,
-        'You cannot start a game that you did not create'
-      )
+      return ErrorState(userAsking.id, 'You cannot start a game that you did not create')
     },
   }
 }

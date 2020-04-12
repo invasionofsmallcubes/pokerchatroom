@@ -4,7 +4,7 @@ function ErrorState(room, message) {
     message,
     print(chat) {
       chat.error(this.room, message)
-    }
+    },
   }
 }
 

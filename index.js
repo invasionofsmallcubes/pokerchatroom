@@ -29,7 +29,10 @@ function changeRoom(socket, roomId, chat) {
   const { name } = users[socket.id]
   delete users[socket.id]
   users[socket.id] = User(name, roomId, socket.id)
-  chat.toSelf(socket.id, `I will move you on the new room ${roomId} (pass this code to your friends)`)
+  chat.toSelf(
+    socket.id,
+    `I will move you on the new room ${roomId} (pass this code to your friends)`
+  )
   chat.toSelfInTopic(socket.id, roomId, CHAT_UPDATE_ROOM)
   return users[socket.id]
 }

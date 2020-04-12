@@ -35,9 +35,7 @@ test("I can bet on the game, if it's my turn", () => {
   expect(foldState.foldingPlayerName).toBe('name')
   const expectedWaitingState = WaitingState(room, 'name2')
   expect(foldState.nextState.room).toBe(expectedWaitingState.room)
-  expect(foldState.nextState.nextPlayerName).toBe(
-    expectedWaitingState.nextPlayerName
-  )
+  expect(foldState.nextState.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
   expect(foldState.room).toBe('room')
 })
 

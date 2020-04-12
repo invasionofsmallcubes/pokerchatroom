@@ -4,7 +4,7 @@ function WaitingState(room, nextPlayerName) {
     nextPlayerName,
     print(chat) {
       chat.game(this.room, `Waiting for move from ${this.nextPlayerName}`)
-    }
+    },
   }
 }
 

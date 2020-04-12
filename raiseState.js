@@ -5,10 +5,7 @@ function RaiseState(bettingPlayerName, room, amount, nextState) {
     nextState,
     amount,
     print(chat) {
-      chat.game(
-        this.room,
-        `Player ${this.bettingPlayerName} raise to ${this.amount}`
-      )
+      chat.game(this.room, `Player ${this.bettingPlayerName} raise to ${this.amount}`)
       nextState.print(chat)
     },
   }

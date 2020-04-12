@@ -3,11 +3,11 @@ const BootstrapState = require('./bootstrapState')
 function Chat() {
   return {
     // eslint-disable-next-line no-unused-vars
-    game: jest.fn((roomName, message) => { }),
+    game: jest.fn((roomName, message) => {}),
     // eslint-disable-next-line no-unused-vars
-    toSelf: jest.fn((id, message) => { }),
+    toSelf: jest.fn((id, message) => {}),
     // eslint-disable-next-line no-unused-vars
-    toSelfInTopic: jest.fn((id, message, topic) => { })
+    toSelfInTopic: jest.fn((id, message, topic) => {}),
   }
 }
 const room = 'room'
@@ -31,9 +31,7 @@ test('I can send messages', () => {
 
   expect(chat.game.mock.calls.length).toBe(7)
   expect(chat.game.mock.calls[0][0]).toBe(room)
-  expect(chat.game.mock.calls[0][1]).toBe(
-    'Game in room room has started by name'
-  )
+  expect(chat.game.mock.calls[0][1]).toBe('Game in room room has started by name')
   expect(chat.game.mock.calls[1][0]).toBe(room)
   expect(chat.game.mock.calls[1][1]).toBe('The dealer is dealerName')
   expect(chat.game.mock.calls[2][0]).toBe(room)
@@ -51,7 +49,6 @@ test('I can send messages', () => {
   expect(chat.toSelf.mock.calls[0][1]).toBe('Your hand is 1,2')
   expect(chat.toSelf.mock.calls[1][0]).toBe('id2')
   expect(chat.toSelf.mock.calls[1][1]).toBe('Your hand is 1,2')
-
 
   expect(chat.toSelfInTopic.mock.calls.length).toBe(2)
   expect(chat.toSelfInTopic.mock.calls[0][0]).toBe('id')

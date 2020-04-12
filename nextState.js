@@ -6,10 +6,7 @@ function NextState(cards, room, nextState) {
     room,
     nextState,
     print(chat) {
-      chat.game(
-        this.room,
-        `Common cards are ${CardPrettiefier().prettify(this.cards)}`
-      )
+      chat.game(this.room, `Common cards are ${CardPrettiefier().prettify(this.cards)}`)
       nextState.print(chat)
     },
   }

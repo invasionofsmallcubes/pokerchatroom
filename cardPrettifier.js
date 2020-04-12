@@ -3,12 +3,7 @@ function CardPrittifier() {
   return {
     prettify(cards) {
       return cards.map(
-        (c) =>
-          c
-            .replace('c', '♣️')
-            .replace('d', '♦️')
-            .replace('h', '♥️')
-            .replace('s', '♠️')
+        (c) => c.replace('c', '♣️').replace('d', '♦️').replace('h', '♥️').replace('s', '♠️')
         // eslint-disable-next-line function-paren-newline
       )
     },

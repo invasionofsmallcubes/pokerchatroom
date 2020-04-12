@@ -38,9 +38,7 @@ test('I can call the higher bet on the table', () => {
   expect(state.amount).toBe(10)
   const expectedWaitingState = WaitingState(room, 'name2')
   expect(state.nextState.room).toBe(expectedWaitingState.room)
-  expect(state.nextState.nextPlayerName).toBe(
-    expectedWaitingState.nextPlayerName
-  )
+  expect(state.nextState.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
   expect(state.poolPrize).toBe(25)
 })
 
