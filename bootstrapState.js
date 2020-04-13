@@ -10,7 +10,8 @@ function BootstrapState(
   bigBlindName,
   poolPrize,
   nextMoveFrom,
-  hands
+  hands,
+  nextState,
 ) {
   return {
     startedBy,
@@ -21,6 +22,7 @@ function BootstrapState(
     poolPrize,
     nextMoveFrom,
     hands,
+    nextState,
     print(chat) {
       chat.game(
         this.roomId,
@@ -41,6 +43,7 @@ function BootstrapState(
         chat.toSelfInTopic(hand.id, { cards, prize: this.poolPrize }, BOOTSTRAP_STATE)
       }
       chat.game(this.roomId, `Waiting for move from ${this.nextMoveFrom}`)
+      this.nextState.print(chat)
     },
   }
 }

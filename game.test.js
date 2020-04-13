@@ -1,5 +1,6 @@
 const Game = require('./game')
 const User = require('./user')
+const WaitingState = require('./waitingState')
 
 const pokerDeck = function PokerDeck() {
   return {
@@ -23,6 +24,7 @@ game.addPlayer(user2)
 
 test('I can bootstrap a game', () => {
   const state = game.bootstrapGame(user)
+  const expectedWaitingState = WaitingState(room, user2.name, user2.id)
 
   expect(game.lastPlayerInTurn).toBe(0)
   expect(state.startedBy).toBe(user.name)
@@ -36,6 +38,7 @@ test('I can bootstrap a game', () => {
   expect(state.hands[0].cards).toEqual(['1', '2'])
   expect(state.hands[1].id).toBe('id2')
   expect(state.hands[1].cards).toEqual(['1', '2'])
+  expect(JSON.stringify(state.nextState)).toBe(JSON.stringify(expectedWaitingState))
 })
 
 test("I can't bootstrap a game if not started by the owner", () => {

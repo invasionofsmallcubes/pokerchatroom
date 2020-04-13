@@ -52,7 +52,7 @@ test('I am able to compute flop', () => {
   game.call(user2)
   const nextState = game.call(user3)
 
-  const ws = WaitingState(room, user.name)
+  const ws = WaitingState(room, user.name, user.id)
   const ns = NextState(['3', '4', '5'], room, ws)
   const cs = CheckingState(user3.name, room, ns)
 

@@ -66,7 +66,8 @@ function Game(owner, id, deck, winnerCalculator) {
           this.waitingPlayer = temporaryWaitingPlayer
           return WaitingState(
             this.id,
-            this.players[temporaryWaitingPlayer].user.name
+            this.players[temporaryWaitingPlayer].user.name,
+            this.players[temporaryWaitingPlayer].user.id
           )
         }
       }
@@ -182,7 +183,10 @@ function Game(owner, id, deck, winnerCalculator) {
           this.players.map((player) => ({
             id: player.user.id,
             cards: player.hand,
-          }))
+          })),
+          WaitingState(this.id,
+            this.players[this.waitingPlayer].user.name,
+            this.players[this.waitingPlayer].user.id)
         )
       }
       return ErrorState(

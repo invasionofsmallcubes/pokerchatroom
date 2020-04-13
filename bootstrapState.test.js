@@ -10,9 +10,18 @@ function Chat() {
     toSelfInTopic: jest.fn((id, message, topic) => { })
   }
 }
+
+function WaitingState() {
+  return {
+    // eslint-disable-next-line no-unused-vars
+    print: jest.fn((chat) => { })
+  }
+}
+
 const room = 'room'
 
 test('I can send messages', () => {
+  const waitingState = WaitingState()
   const bootstrapState = BootstrapState(
     'name',
     'room',
@@ -24,8 +33,10 @@ test('I can send messages', () => {
     [
       { id: 'id', cards: ['1', '2'] },
       { id: 'id2', cards: ['1', '2'] },
-    ]
+    ],
+    waitingState
   )
+
   const chat = Chat()
   bootstrapState.print(chat)
 
@@ -45,6 +56,7 @@ test('I can send messages', () => {
   expect(chat.game.mock.calls[5][1]).toBe('Dealing cards...')
   expect(chat.game.mock.calls[6][0]).toBe(room)
   expect(chat.game.mock.calls[6][1]).toBe('Waiting for move from nextMoveFrom')
+  expect(waitingState.print.mock.calls.length).toBe(1)
 
   expect(chat.toSelf.mock.calls.length).toBe(2)
   expect(chat.toSelf.mock.calls[0][0]).toBe('id')

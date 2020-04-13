@@ -1,9 +1,10 @@
 # Stuff to do:
+    ☐ put cards and pool prize in the table in the ui
     ☐ block betting after winning
     ☐ change font size
     ☐ move betting inside player
     ☐ plan next round
-    ☐ add !table command
+    ☐ refactor BootStrap test state, to use the comparison
     ☐ nicer UI
         help screen
         tables
