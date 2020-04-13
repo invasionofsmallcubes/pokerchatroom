@@ -1,6 +1,7 @@
 const Game = require('./game')
 const User = require('./user')
 const WaitingState = require('./waitingState')
+const CallState = require('./callState')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -33,12 +34,12 @@ beforeEach(() => {
 
 test('I can call the higher bet on the table', () => {
   const state = game.call(user)
-  expect(state.room).toBe('room')
-  expect(state.callingPlayer).toBe('name')
-  expect(state.amount).toBe(10)
   const expectedWaitingState = WaitingState(room, user2.name, user2.id)
-  expect(JSON.stringify(state.nextState)).toBe(JSON.stringify(expectedWaitingState))
-  expect(state.poolPrize).toBe(25)
+  const expectedCallState = CallState('name', 'room', expectedWaitingState, 10, 25, {
+    money: 90,
+    id: user.id,
+  })
+  expect(JSON.stringify(state)).toBe(JSON.stringify(expectedCallState))
 })
 
 test('I can call the higher bet on the table', () => {

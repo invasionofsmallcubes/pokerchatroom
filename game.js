@@ -118,7 +118,14 @@ function Game(owner, id, deck, winnerCalculator) {
           currentPlayer.money -= moneyToAdd
           currentPlayer.bet += moneyToAdd
           this.poolPrize += moneyToAdd
-          return CallState(user.name, this.id, this.calculateNextStep(), moneyToAdd, this.poolPrize)
+          return CallState(
+            user.name,
+            this.id,
+            this.calculateNextStep(),
+            moneyToAdd,
+            this.poolPrize,
+            { money: currentPlayer.money, id: currentPlayer.user.id }
+          )
         }
         return CheckingState(user.name, this.id, this.calculateNextStep())
       })
