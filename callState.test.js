@@ -4,7 +4,10 @@ const WaitingState = require('./waitingState')
 function Chat() {
   return {
     // eslint-disable-next-line no-unused-vars
-    game: jest.fn((roomName, message) => {}),
+    game: jest.fn((roomName, message) => {
+    }),
+    // eslint-disable-next-line no-unused-vars
+    toSelf: jest.fn((id, message) => { })
   }
 }
 

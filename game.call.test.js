@@ -36,9 +36,8 @@ test('I can call the higher bet on the table', () => {
   expect(state.room).toBe('room')
   expect(state.callingPlayer).toBe('name')
   expect(state.amount).toBe(10)
-  const expectedWaitingState = WaitingState(room, 'name2')
-  expect(state.nextState.room).toBe(expectedWaitingState.room)
-  expect(state.nextState.nextPlayerName).toBe(expectedWaitingState.nextPlayerName)
+  const expectedWaitingState = WaitingState(room, user2.name, user2.id)
+  expect(JSON.stringify(state.nextState)).toBe(JSON.stringify(expectedWaitingState))
   expect(state.poolPrize).toBe(25)
 })
 
@@ -48,7 +47,7 @@ test('I can call the higher bet on the table', () => {
   expect(state.callingPlayer).toBe('name')
   expect(state.amount).toBe(10)
   expect(state.nextState.room).toBe(room)
-  expect(state.nextState.nextPlayerName).toBe('name2')
+  expect(state.nextState.nextPlayerName).toBe(user2.name)
   expect(state.poolPrize).toBe(25)
 
   const state2 = game.call(user2)

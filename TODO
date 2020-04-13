@@ -1,7 +1,12 @@
 # Stuff to do:
+    ☐ put cards and pool prize in the table in the ui
     ☐ block betting after winning
     ☐ move betting inside player
     ☐ plan next round
+<<<<<<< HEAD
+=======
+    ☐ refactor BootStrap test state, to use the comparison
+>>>>>>> fixed waiting state to talk directly to self to say it's your turn
     ☐ nicer UI
         ☐ change font size
         ☐ help screen

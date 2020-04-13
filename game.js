@@ -61,7 +61,9 @@ function Game(owner, id, deck, winnerCalculator) {
         const temporaryWaitingPlayer = (this.waitingPlayer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
           this.waitingPlayer = temporaryWaitingPlayer
-          return WaitingState(this.id, this.players[temporaryWaitingPlayer].user.name)
+          return WaitingState(this.id,
+            this.players[temporaryWaitingPlayer].user.name,
+            this.players[temporaryWaitingPlayer].user.id)
         }
       }
       return ErrorState(this.id, 'Not found a next player')
@@ -167,7 +169,10 @@ function Game(owner, id, deck, winnerCalculator) {
           this.players.map((player) => ({
             id: player.user.id,
             cards: player.hand,
-          }))
+          })),
+          WaitingState(this.id,
+            this.players[this.waitingPlayer].user.name,
+            this.players[this.waitingPlayer].user.id)
         )
       }
       return ErrorState(userAsking.id, 'You cannot start a game that you did not create')
