@@ -143,7 +143,17 @@ function Game(owner, id, deck, winnerCalculator) {
         currentPlayer.money -= amount
         currentPlayer.bet += amount
         this.poolPrize += amount
-        return RaiseState(user.name, this.id, amount, this.calculateNextStep())
+        return RaiseState(
+          user.name,
+          this.id,
+          amount,
+          this.calculateNextStep(),
+          {
+            money: currentPlayer.money,
+            id: currentPlayer.user.id,
+          },
+          this.poolPrize
+        )
       })
     },
     bootstrapGame(userAsking) {

@@ -1,4 +1,4 @@
-const UPDATE_SELF_STATUS = 'update-self-status'
+const UpdateDashboard = require('./updateDashboard')
 
 function CallState(callingPlayer, room, nextState, amount, poolPrize, statusUpdate) {
   return {
@@ -11,7 +11,7 @@ function CallState(callingPlayer, room, nextState, amount, poolPrize, statusUpda
     print(chat) {
       chat.game(this.room, `Player ${this.callingPlayer} has called (${this.amount})`)
       chat.game(this.room, `The pool prize is ${this.poolPrize}`)
-      chat.toSelfInTopic(statusUpdate.id, statusUpdate, UPDATE_SELF_STATUS)
+      UpdateDashboard(this.room, statusUpdate, this.poolPrize).print(chat)
       nextState.print(chat)
     },
   }

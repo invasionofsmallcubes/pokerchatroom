@@ -27,6 +27,9 @@ function Chat(io, socket) {
     toSelfInTopic(id, message, topic) {
       this.comms.to(id).emit(topic, message)
     },
+    toRoomInTopic(roomName, message, topic) {
+      this.comms.to(roomName).emit(topic, message)
+    },
   }
 }
 module.exports = Chat

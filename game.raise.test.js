@@ -1,5 +1,7 @@
 const Game = require('./game')
 const User = require('./user')
+const RaiseState = require('./raiseState')
+const WaitingState = require('./waitingState')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -37,13 +39,24 @@ test("I cannot bet on the game, if it's not my turn", () => {
 })
 
 test("I can bet on the game, if it's my turn", () => {
-  const gameState = game.raise(15, user)
-  expect(game.lookupPlayer(user).money).toBe(85)
-  expect(game.lookupPlayer(user).bet).toBe(15)
-  expect(game.poolPrize).toBe(30)
-  expect(gameState.room).toBe(room)
-  expect(gameState.bettingPlayerName).toBe('name')
-  expect(gameState.amount).toBe(15)
-  expect(gameState.nextState.room).toBe('room')
-  expect(gameState.nextState.nextPlayerName).toBe('name2')
+  const amount = 15
+  const poolPrize = 30
+  const money = 85
+  const gameState = game.raise(amount, user)
+  expect(game.lookupPlayer(user).money).toBe(money)
+  expect(game.lookupPlayer(user).bet).toBe(amount)
+  expect(game.poolPrize).toBe(poolPrize)
+
+  const expectedState = RaiseState(
+    user.name,
+    room,
+    amount,
+    WaitingState(room, user2.name, user2.id),
+    {
+      money,
+      id: user.id,
+    },
+    poolPrize
+  )
+  expect(JSON.stringify(gameState)).toBe(JSON.stringify(expectedState))
 })

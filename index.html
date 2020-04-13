@@ -188,6 +188,7 @@
       const CHAT_UPDATE_ROOM = 'chat-update-room'
       const BOOTSTRAP_STATE = 'bootstrap-state'
       const UPDATE_SELF_STATUS = 'update-self-status'
+      const UPDATE_POOL_PRIZE = 'update-pool-prize'
 
       function elem(id) {
         return document.getElementById(id)
@@ -226,8 +227,10 @@
       })
       const messagesDiv = elem('messages')
       socket.on(UPDATE_SELF_STATUS, function (message) {
-        console.log('ciao')
         elem('money-left').textContent = message.money
+      })
+      socket.on(UPDATE_POOL_PRIZE, function (message) {
+        elem('pool-prize').textContent = message.poolPrize
       })
       socket.on(CHAT_UPDATE_ROOM, function (roomId) {
         elem('room').textContent = roomId
