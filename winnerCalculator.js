@@ -11,7 +11,7 @@ function WinnerCalculator() {
         hands.push(h)
       }
       const handWinners = Hand.winners(hands)
-      return handWinners[0].playerId
+      return handWinners
     },
   }
 }
