@@ -29,10 +29,9 @@ test('I can send messages', () => {
     'smallBlindName',
     'bigBlindName',
     15,
-    'nextMoveFrom',
     [
-      { id: 'id', cards: ['1', '2'] },
-      { id: 'id2', cards: ['1', '2'] },
+      { id: 'id', cards: ['1', '2'], moneyLeft: 10 },
+      { id: 'id2', cards: ['1', '2'], moneyLeft: 20 },
     ],
     waitingState
   )
@@ -40,7 +39,7 @@ test('I can send messages', () => {
   const chat = Chat()
   bootstrapState.print(chat)
 
-  expect(chat.game.mock.calls.length).toBe(7)
+  expect(chat.game.mock.calls.length).toBe(6)
   expect(chat.game.mock.calls[0][0]).toBe(room)
   expect(chat.game.mock.calls[0][1]).toBe('Game in room room has started by name')
   expect(chat.game.mock.calls[1][0]).toBe(room)
@@ -52,8 +51,6 @@ test('I can send messages', () => {
   expect(chat.game.mock.calls[4][0]).toBe(room)
   expect(chat.game.mock.calls[4][1]).toBe('Current pool prize is: 15')
   expect(chat.game.mock.calls[5][1]).toBe('Dealing cards...')
-  expect(chat.game.mock.calls[6][0]).toBe(room)
-  expect(chat.game.mock.calls[6][1]).toBe('Waiting for move from nextMoveFrom')
   expect(waitingState.print.mock.calls.length).toBe(1)
 
   expect(chat.toSelf.mock.calls.length).toBe(2)
@@ -64,7 +61,15 @@ test('I can send messages', () => {
 
   expect(chat.toSelfInTopic.mock.calls.length).toBe(2)
   expect(chat.toSelfInTopic.mock.calls[0][0]).toBe('id')
-  expect(chat.toSelfInTopic.mock.calls[0][1]).toEqual({ cards: ['1', '2'], prize: 15 })
+  expect(chat.toSelfInTopic.mock.calls[0][1]).toEqual({
+    cards: ['1', '2'],
+    poolPrize: 15,
+    moneyLeft: 10,
+  })
   expect(chat.toSelfInTopic.mock.calls[1][0]).toBe('id2')
-  expect(chat.toSelfInTopic.mock.calls[1][1]).toEqual({ cards: ['1', '2'], prize: 15 })
+  expect(chat.toSelfInTopic.mock.calls[1][1]).toEqual({
+    cards: ['1', '2'],
+    poolPrize: 15,
+    moneyLeft: 20,
+  })
 })

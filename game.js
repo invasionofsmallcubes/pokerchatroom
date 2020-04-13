@@ -167,10 +167,10 @@ function Game(owner, id, deck, winnerCalculator) {
           this.players[smallBlindIdx].user.name,
           this.players[bigBlindIdx].user.name,
           this.poolPrize,
-          this.players[this.waitingPlayer].user.name,
           this.players.map((player) => ({
             id: player.user.id,
             cards: player.hand,
+            moneyLeft: player.money,
           })),
           WaitingState(
             this.id,

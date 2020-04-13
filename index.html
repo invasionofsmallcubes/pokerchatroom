@@ -8,19 +8,10 @@
     />
     <title>PockerChatRoom</title>
     <script src="/socket.io/socket.io.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-    <link
-      rel="stylesheet"
-      href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css" />
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css"
-    />
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css" />
     <style>
       .main-container {
         padding: 5px;
@@ -28,7 +19,7 @@
 
       .main-container * {
         font-size: 30px;
-        font: "Roboto";
+        font: 'Roboto';
       }
 
       .description {
@@ -129,8 +120,8 @@
               <ul>
                 <li>
                   <pre>!create</pre>
-                  allows you to create a new match. The bot will give a code to
-                  send to your friends.
+                  allows you to create a new match. The bot will give a code to send to your
+                  friends.
                 </li>
                 <li>
                   <pre>!join $code</pre>
@@ -155,8 +146,8 @@
               <div class="divTableRow">
                 <div id="hand" class="divTableCell">&nbsp;</div>
                 <div id="table" class="divTableCell">&nbsp;</div>
-                <div id="pot" class="divTableCell">&nbsp;</div>
-                <div id="your-money" class="divTableCell">&nbsp;</div>
+                <div id="pool-prize" class="divTableCell">&nbsp;</div>
+                <div id="money-left" class="divTableCell">&nbsp;</div>
                 <div id="room" class="divTableCell">&nbsp;</div>
               </div>
             </div>
@@ -172,21 +163,11 @@
             </div>
             <div style="width: 100%;">
               <form id="myForm" action="" class="frm">
-                <div
-                  class="mdl-textfield mdl-js-textfield"
-                  style="width: 100%;"
-                >
-                  <input
-                    class="mdl-textfield__input"
-                    type="text"
-                    id="m"
-                    autocomplete="off"
-                  />
+                <div class="mdl-textfield mdl-js-textfield" style="width: 100%;">
+                  <input class="mdl-textfield__input" type="text" id="m" autocomplete="off" />
                   <label class="mdl-textfield__label" for="sample1" />
                 </div>
-                <button
-                  class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-                >
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
                   <i class="material-icons">send</i>
                 </button>
               </form>
@@ -196,89 +177,85 @@
       </div>
     </div>
     <script>
-      const CHAT_MESSAGE = "chat-message";
-      const GAME_MESSAGE = "game-message";
-      const CHAT_MESSAGE_SELF = "chat-message-self";
-      const PERSONAL_MESSAGE = "personal-message";
-      const ERROR_MESSAGE = "error-message";
-      const INIT_USER = "init-user";
-      const CMD = "cmd";
-      const GENERAL_ROOM = "generalRoom";
-      const CHAT_UPDATE_ROOM = "chat-update-room";
-      const BOOTSTRAP_STATE = "bootstrap-state";
+      const CHAT_MESSAGE = 'chat-message'
+      const GAME_MESSAGE = 'game-message'
+      const CHAT_MESSAGE_SELF = 'chat-message-self'
+      const PERSONAL_MESSAGE = 'personal-message'
+      const ERROR_MESSAGE = 'error-message'
+      const INIT_USER = 'init-user'
+      const CMD = 'cmd'
+      const GENERAL_ROOM = 'generalRoom'
+      const CHAT_UPDATE_ROOM = 'chat-update-room'
+      const BOOTSTRAP_STATE = 'bootstrap-state'
 
       function elem(id) {
-        return document.getElementById(id);
+        return document.getElementById(id)
       }
 
       function addMessage(messagesDiv, msgString) {
-        const li = document.createElement("li");
-        li.innerHTML = msgString;
-        messagesDiv.appendChild(li);
+        const li = document.createElement('li')
+        li.innerHTML = msgString
+        messagesDiv.appendChild(li)
       }
 
-      var socket = io();
-      const name = window.prompt("Tell me your name");
-      socket.emit(INIT_USER, name);
+      var socket = io()
+      const name = window.prompt('Tell me your name')
+      socket.emit(INIT_USER, name)
 
-      const help = elem("help");
-      help.addEventListener("click", function () {
-        const display = elem("description").style.display;
-        elem("description").style.display =
-          display === "block" ? "none" : "block";
-        const text = elem("help-button").textContent;
-        elem("help-button").textContent =
-          text === "help" ? "help_outline" : "help";
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+      const help = elem('help')
+      help.addEventListener('click', function () {
+        const display = elem('description').style.display
+        elem('description').style.display = display === 'block' ? 'none' : 'block'
+        const text = elem('help-button').textContent
+        elem('help-button').textContent = text === 'help' ? 'help_outline' : 'help'
+        window.scrollTo(0, document.body.scrollHeight)
+      })
 
-      const form = elem("myForm");
-      form.addEventListener("submit", function (evt) {
-        evt.preventDefault();
-        const message = elem("m").value;
-        if (message.startsWith("!")) {
-          socket.emit(CMD, message);
+      const form = elem('myForm')
+      form.addEventListener('submit', function (evt) {
+        evt.preventDefault()
+        const message = elem('m').value
+        if (message.startsWith('!')) {
+          socket.emit(CMD, message)
         } else {
-          socket.emit(CHAT_MESSAGE, message);
+          socket.emit(CHAT_MESSAGE, message)
         }
-        elem("m").value = "";
-        return false;
-      });
-      const messagesDiv = elem("messages");
+        elem('m').value = ''
+        return false
+      })
+      const messagesDiv = elem('messages')
       socket.on(CHAT_UPDATE_ROOM, function (roomId) {
-        elem("room").textContent = roomId;
-        elem("playground").style.display = "block";
-      });
+        elem('room').textContent = roomId
+        elem('playground').style.display = 'block'
+      })
       socket.on(BOOTSTRAP_STATE, function (msg) {
-        elem("hand").textContent = msg.cards;
-        elem("your-money").textContent = msg.prize;
-      });
+        elem('hand').textContent = msg.cards
+        elem('pool-prize').textContent = msg.poolPrize
+        elem('money-left').textContent = msg.moneyLeft
+      })
       socket.on(CHAT_MESSAGE, function (msg) {
-        addMessage(messagesDiv, `${msg.name}: ${msg.msg}`);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+        addMessage(messagesDiv, `${msg.name}: ${msg.msg}`)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
       socket.on(CHAT_MESSAGE_SELF, function (msg) {
-        addMessage(messagesDiv, `You said: ${msg.msg}`);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+        addMessage(messagesDiv, `You said: ${msg.msg}`)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
       socket.on(ERROR_MESSAGE, function (msg) {
         addMessage(
           messagesDiv,
           `<span style="font-size:14px;">only visible to you<br/></span><b>${msg}</b>`
-        );
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+        )
+        window.scrollTo(0, document.body.scrollHeight)
+      })
       socket.on(GAME_MESSAGE, function (msg) {
-        addMessage(messagesDiv, `<i>${msg}</i>`);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+        addMessage(messagesDiv, `<i>${msg}</i>`)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
       socket.on(PERSONAL_MESSAGE, function (msg) {
-        addMessage(
-          messagesDiv,
-          `<span><i>only visible to you</i><br/></span>${msg}`
-        );
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+        addMessage(messagesDiv, `<span><i>only visible to you</i><br/></span>${msg}`)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
     </script>
   </body>
 </html>

@@ -33,11 +33,12 @@ test('I can bootstrap a game', () => {
   expect(state.smallBlindName).toBe('name2')
   expect(state.bigBlindName).toBe('name')
   expect(state.poolPrize).toBe(15)
-  expect(state.nextMoveFrom).toBe('name2')
   expect(state.hands[0].id).toBe('id')
   expect(state.hands[0].cards).toEqual(['1', '2'])
+  expect(state.hands[0].moneyLeft).toBe(90)
   expect(state.hands[1].id).toBe('id2')
   expect(state.hands[1].cards).toEqual(['1', '2'])
+  expect(state.hands[1].moneyLeft).toBe(95)
   expect(JSON.stringify(state.nextState)).toBe(JSON.stringify(expectedWaitingState))
 })
 

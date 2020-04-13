@@ -9,7 +9,6 @@ function BootstrapState(
   smallBlindName,
   bigBlindName,
   poolPrize,
-  nextMoveFrom,
   hands,
   nextState
 ) {
@@ -20,7 +19,6 @@ function BootstrapState(
     smallBlindName,
     bigBlindName,
     poolPrize,
-    nextMoveFrom,
     hands,
     nextState,
     print(chat) {
@@ -34,9 +32,12 @@ function BootstrapState(
         const hand = this.hands[i]
         const cards = CardPrettiefier().prettify(hand.cards)
         chat.toSelf(hand.id, `Your hand is ${cards}`)
-        chat.toSelfInTopic(hand.id, { cards, prize: this.poolPrize }, BOOTSTRAP_STATE)
+        chat.toSelfInTopic(
+          hand.id,
+          { cards, poolPrize: this.poolPrize, moneyLeft: hand.moneyLeft },
+          BOOTSTRAP_STATE
+        )
       }
-      chat.game(this.roomId, `Waiting for move from ${this.nextMoveFrom}`)
       this.nextState.print(chat)
     },
   }
