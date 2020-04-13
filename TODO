@@ -1,23 +1,28 @@
 # Stuff to do:
-    ☐ put cards and pool prize in the table in the ui
-    ☐ block betting after winning
-    ☐ move betting inside player
-    ☐ plan next round
-    ☐ refactor BootStrap test state, to use the comparison
-    ☐ refactor CallState test state, to use the mock
-    ☐ refactor FoldState test state, to use the mock
-    ☐ nicer UI
-        ☐ change font size
-        ☐ help screen
-        ✔ tables @done(20-04-11 19:22)
-    ✔ remove jquery @done(20-04-08 04:30)
-    ✔ prize split in case of tie @done(20-04-07 18:29)
-    ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)
-    ✔ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck) @done(20-04-06 19:54)
-    ✔ calculate winning player @done(20-04-06 19:05)
-    ✔ watch this video to understand [rooms](https://youtu.be/UymGJnv-WsE) @done(20-03-18 17:47)
-    ✔ put all strings in encoded format with variables inside the strings @done(20-04-03 19:11)
-    ✔ create texas holdem engine (this doesn't look it's found anywhere the way I like it) @done(20-04-06 09:16)
+  ☐ BUG: 
+    ```/Users/emanueleianni/personal/pokerchatroom/game.js:90
+    const players = winners.map((w) => this.players[w.playerId])
+                            ^
+    TypeError: winners.map is not a function```
+  ☐ block betting after winning
+  ☐ move betting inside player
+  ☐ plan next round
+  ☐ refactor BootStrap test state, to use the comparison
+  ☐ refactor CallState test state, to use the mock
+  ☐ refactor FoldState test state, to use the mock
+  ✔ put cards and pool prize in the table in the ui @done(20-04-13 16:44)
+  ☐ nicer UI
+      ☐ change font size
+      ☐ help screen
+      ✔ tables @done(20-04-11 19:22)
+  ✔ remove jquery @done(20-04-08 04:30)
+  ✔ prize split in case of tie @done(20-04-07 18:29)
+  ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)
+  ✔ introduce this library to give cards [card deck](https://github.com/kadamwhite/node-card-deck) @done(20-04-06 19:54)
+  ✔ calculate winning player @done(20-04-06 19:05)
+  ✔ watch this video to understand [rooms](https://youtu.be/UymGJnv-WsE) @done(20-03-18 17:47)
+  ✔ put all strings in encoded format with variables inside the strings @done(20-04-03 19:11)
+  ✔ create texas holdem engine (this doesn't look it's found anywhere the way I like it) @done(20-04-06 09:16)
         This follows the following steps:
             Player 4 – Calls the big blind (25¢)
             Player 5 – folds
