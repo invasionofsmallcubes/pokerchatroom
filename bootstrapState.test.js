@@ -14,7 +14,7 @@ function Chat() {
 function WaitingState() {
   return {
     // eslint-disable-next-line no-unused-vars
-    print: jest.fn((chat) => { })
+    print: jest.fn((chat) => {}),
   }
 }
 

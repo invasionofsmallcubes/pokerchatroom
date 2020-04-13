@@ -1,1 +1,1 @@
-global.something = () => ('hello')
+global.something = () => 'hello'

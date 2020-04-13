@@ -3,10 +3,9 @@
     ☐ block betting after winning
     ☐ move betting inside player
     ☐ plan next round
-<<<<<<< HEAD
-=======
     ☐ refactor BootStrap test state, to use the comparison
->>>>>>> fixed waiting state to talk directly to self to say it's your turn
+    ☐ refactor CallState test state, to use the mock
+    ☐ refactor FoldState test state, to use the mock
     ☐ nicer UI
         ☐ change font size
         ☐ help screen

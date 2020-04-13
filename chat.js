@@ -11,9 +11,12 @@ function Chat(io, socket) {
     error(id, message) {
       this.comms.to(id).emit(ERROR_MESSAGE, message)
     },
+    gameExceptSender(roomName, message) {
+      this.commsSelf.to(roomName).emit(CHAT_MESSAGE, message)
+    },
     room(roomName, message) {
       this.comms.to(this.commsSelf.id).emit(CHAT_MESSAGE_SELF, message)
-      this.commsSelf.to(roomName).emit(CHAT_MESSAGE, message)
+      this.gameExceptSender(roomName, message)
     },
     game(roomName, message) {
       this.comms.to(roomName).emit(GAME_MESSAGE, message)

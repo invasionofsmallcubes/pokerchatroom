@@ -4,9 +4,9 @@ function WaitingState(room, nextPlayerName, selfId) {
     nextPlayerName,
     selfId,
     print(chat) {
-      chat.game(this.room, `Waiting for move from ${this.nextPlayerName}`)
-      chat.toSelf(selfId, 'It\'s your turn!')
-    }
+      chat.gameExceptSender(this.room, `Waiting for move from ${this.nextPlayerName}`)
+      chat.toSelf(selfId, "It's your turn!")
+    },
   }
 }
 

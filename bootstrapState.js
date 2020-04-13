@@ -11,7 +11,7 @@ function BootstrapState(
   poolPrize,
   nextMoveFrom,
   hands,
-  nextState,
+  nextState
 ) {
   return {
     startedBy,
