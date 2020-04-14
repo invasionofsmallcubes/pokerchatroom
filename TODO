@@ -1,12 +1,9 @@
 # Stuff to do:
-  ☐ BUG: 
-    ```/Users/emanueleianni/personal/pokerchatroom/game.js:90
-    const players = winners.map((w) => this.players[w.playerId])
-                            ^
-    TypeError: winners.map is not a function```
-  ☐ block betting after winning
-  ☐ move betting inside player
+  ☐ show winners on the UI
   ☐ plan next round
+  ☐ block betting after win and before reset
+  ☐ manually setup small and big blind
+  ☐ move betting inside player
   ☐ refactor BootStrap test state, to use the comparison
   ☐ refactor CallState test state, to use the mock
   ☐ refactor FoldState test state, to use the mock
@@ -15,6 +12,11 @@
       ☐ change font size
       ☐ help screen
       ✔ tables @done(20-04-11 19:22)
+  ✔ BUG: @done(20-04-14 17:19)
+      ```/Users/emanueleianni/personal/pokerchatroom/game.js:90
+      const players = winners.map((w) => this.players[w.playerId])
+                              ^
+      TypeError: winners.map is not a function```
   ✔ remove jquery @done(20-04-08 04:30)
   ✔ prize split in case of tie @done(20-04-07 18:29)
   ✔ introduce this library to evaluate [hands](https://github.com/goldfire/pokersolver) @done(20-04-06 21:48)

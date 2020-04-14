@@ -187,7 +187,7 @@
       const GENERAL_ROOM = 'generalRoom'
       const CHAT_UPDATE_ROOM = 'chat-update-room'
       const BOOTSTRAP_STATE = 'bootstrap-state'
-      const UPDATE_SELF_STATUS = 'update-self-status'
+      const UPDATE_MONEY_LEFT = 'update-money-left'
       const UPDATE_POOL_PRIZE = 'update-pool-prize'
       const UPDATE_COMMON_CARDS = 'update-common-cards'
 
@@ -230,7 +230,7 @@
       socket.on(UPDATE_COMMON_CARDS, function (message) {
         elem('table').textContent = message
       })
-      socket.on(UPDATE_SELF_STATUS, function (message) {
+      socket.on(UPDATE_MONEY_LEFT, function (message) {
         elem('money-left').textContent = message.money
       })
       socket.on(UPDATE_POOL_PRIZE, function (message) {

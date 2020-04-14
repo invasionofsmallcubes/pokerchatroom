@@ -38,7 +38,7 @@ test('I can print the message', () => {
   expect(chat.toSelfInTopic.mock.calls.length).toBe(1)
   expect(chat.toSelfInTopic.mock.calls[0][0]).toBe('id2')
   expect(chat.toSelfInTopic.mock.calls[0][1]).toEqual({ money: 33, id: 'id2' })
-  expect(chat.toSelfInTopic.mock.calls[0][2]).toBe('update-self-status')
+  expect(chat.toSelfInTopic.mock.calls[0][2]).toBe('update-money-left')
 
   expect(chat.toRoomInTopic.mock.calls.length).toBe(1)
   expect(chat.toRoomInTopic.mock.calls[0][0]).toBe('room')
