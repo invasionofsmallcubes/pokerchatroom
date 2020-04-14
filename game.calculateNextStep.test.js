@@ -13,11 +13,21 @@ const user3 = User('name3', room, 'id3')
 
 let game
 
-function aWinningState(money) {
+function aWinningState(money, poolPrize) {
   const p = Player(user3, money)
   p.bet = 10
   p.hand = ['1', '2']
-  return WinningMultiState([p], room)
+  return WinningMultiState([p], room, poolPrize)
+}
+
+// eslint-disable-next-line no-unused-vars
+function aWinningStateNoFold(money, poolPrize) {
+  const p = Player(user3, money)
+  p.bet = 10
+  p.hand = ['1', '2']
+  return WinningMultiState([p], room, poolPrize, {
+    hands: [{ cards: ['1', '2'], name: user3.name }],
+  })
 }
 
 const pokerDeck = function PokerDeck() {
@@ -120,14 +130,16 @@ test('I am able to compute the showdown', () => {
 
   expect(game.currentStep).toBe(4)
 
-  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(120)))
+  const poolPrize = 30
+
+  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(120, poolPrize)))
   expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
-  expect(game.poolPrize).toBe(30)
+  expect(game.poolPrize).toBe(poolPrize)
 })
 
 test("if everybody folds, the last one that didn't fold wins", () => {
   game.fold(user)
   const winningState = game.fold(user2)
 
-  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(105)))
+  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(105, 15)))
 })

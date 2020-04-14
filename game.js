@@ -42,15 +42,23 @@ function Game(owner, id, deck, winnerCalculator) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
     },
-    calculateWinningPlayers() {
-      const cardExaminations = []
+    getPlayingPlayers() {
+      const playingPlayers = []
       for (let i = 0; i < this.players.length; i += 1) {
         const player = this.players[i]
         if (!player.hasFolded) {
-          let hand = []
-          hand = hand.concat(player.hand, this.cardsOnTable)
-          cardExaminations.push(CardExamination(i, hand))
+          playingPlayers.push({ idx: i, player })
         }
+      }
+      return playingPlayers
+    },
+    calculateWinningPlayers(playingPlayers) {
+      const cardExaminations = []
+      for (let i = 0; i < playingPlayers.length; i += 1) {
+        const { idx, player } = playingPlayers[i]
+        let hand = []
+        hand = hand.concat(player.hand, this.cardsOnTable)
+        cardExaminations.push(CardExamination(idx, hand))
       }
       const winners = this.winnerCalculator.calculateWinningPlayer(cardExaminations)
       return winners
@@ -81,18 +89,19 @@ function Game(owner, id, deck, winnerCalculator) {
       if (this.everyPlayerHasFolded()) {
         const winner = this.playerNotFolding()
         winner.money += this.poolPrize
-        return WinningMultiState([winner], this.id)
+        return WinningMultiState([winner], this.id, this.poolPrize)
       }
       if (this.lastPlayerInTurn === this.waitingPlayer) {
         if (this.currentStep === 3) {
           this.currentStep += 1
-          const winners = this.calculateWinningPlayers()
+          const playingPlayers = this.getPlayingPlayers()
+          const winners = this.calculateWinningPlayers(playingPlayers)
           const players = winners.map((w) => this.players[w.playerId])
           const splitMoney = this.poolPrize / players.length
           for (let i = 0; i < players.length; i += 1) {
             players[i].money += splitMoney
           }
-          return WinningMultiState(players, this.id)
+          return WinningMultiState(players, this.id, this.poolPrize)
         }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()
