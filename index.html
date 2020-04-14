@@ -190,6 +190,7 @@
       const UPDATE_MONEY_LEFT = 'update-money-left'
       const UPDATE_POOL_PRIZE = 'update-pool-prize'
       const UPDATE_COMMON_CARDS = 'update-common-cards'
+      const SHOW_PLAYING_PLAYERS = 'show-playing-players'
 
       function elem(id) {
         return document.getElementById(id)
@@ -229,6 +230,14 @@
       const messagesDiv = elem('messages')
       socket.on(UPDATE_COMMON_CARDS, function (message) {
         elem('table').textContent = message
+      })
+      socket.on(SHOW_PLAYING_PLAYERS, function(message) {
+        console.log(JSON.stringify(message))
+        for(let i = 0; i < message.hands.length; i += 1) {
+          const h = message.hands[i]
+          addMessage(messagesDiv, `${h.name} has ${h.cards}`)
+        }
+        window.scrollTo(0, document.body.scrollHeight)
       })
       socket.on(UPDATE_MONEY_LEFT, function (message) {
         elem('money-left').textContent = message.money

@@ -55,6 +55,7 @@ test('I can win', () => {
   expect(chat.toRoomInTopic.mock.calls.length).toBe(1)
   expect(chat.toRoomInTopic.mock.calls[0][0]).toBe('room')
   expect(chat.toRoomInTopic.mock.calls[0][1]).toEqual(possibleWinners)
+  expect(chat.toRoomInTopic.mock.calls[0][2]).toEqual('show-playing-players')
 })
 
 test('I can win when people folds', () => {

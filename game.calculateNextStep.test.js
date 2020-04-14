@@ -20,13 +20,16 @@ function aWinningState(money, poolPrize) {
   return WinningMultiState([p], room, poolPrize)
 }
 
-// eslint-disable-next-line no-unused-vars
 function aWinningStateNoFold(money, poolPrize) {
   const p = Player(user3, money)
   p.bet = 10
   p.hand = ['1', '2']
   return WinningMultiState([p], room, poolPrize, {
-    hands: [{ cards: ['1', '2'], name: user3.name }],
+    hands: [
+      { cards: ['1', '2'], name: user.name },
+      { cards: ['1', '2'], name: user2.name },
+      { cards: ['1', '2'], name: user3.name },
+    ],
   })
 }
 
@@ -132,7 +135,8 @@ test('I am able to compute the showdown', () => {
 
   const poolPrize = 30
 
-  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(aWinningState(120, poolPrize)))
+  const winningStatus = aWinningStateNoFold(120, poolPrize)
+  expect(JSON.stringify(winningState.nextState)).toBe(JSON.stringify(winningStatus))
   expect(game.lookupPlayer(user3).money).toBe(120) // wrong, calc win
   expect(game.poolPrize).toBe(poolPrize)
 })

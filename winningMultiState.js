@@ -1,5 +1,7 @@
 const CardPrettiefier = require('./cardPrettifier')
 
+const SHOW_PLAYING_PLAYERS = 'show-playing-players'
+
 function WinningMultiState(winnerPlayers, room, poolPrize, tableStatus) {
   return {
     winnerPlayers,
@@ -13,7 +15,7 @@ function WinningMultiState(winnerPlayers, room, poolPrize, tableStatus) {
           cards: cp.prettify(h.cards),
           name: h.name,
         }))
-        chat.toRoomInTopic(this.room, { hands: prettyHands })
+        chat.toRoomInTopic(this.room, { hands: prettyHands }, SHOW_PLAYING_PLAYERS)
       }
 
       for (let i = 0; i < winnerPlayers.length; i += 1) {

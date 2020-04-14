@@ -101,7 +101,13 @@ function Game(owner, id, deck, winnerCalculator) {
           for (let i = 0; i < players.length; i += 1) {
             players[i].money += splitMoney
           }
-          return WinningMultiState(players, this.id, this.poolPrize)
+          const tableStatus = {
+            hands: playingPlayers.map((pp) => ({
+              cards: pp.player.hand,
+              name: pp.player.user.name,
+            })),
+          }
+          return WinningMultiState(players, this.id, this.poolPrize, tableStatus)
         }
         if (this.currentStep === 0) {
           this.cardsOnTable = this.deck.drawThreeCards()
