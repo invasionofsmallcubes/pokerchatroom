@@ -13,4 +13,26 @@ function Chat() {
   }
 }
 
+function PokerDeck() {
+  return {
+    drawTwoCards() {
+      return ['1', '2']
+    },
+    drawThreeCards() {
+      return ['3', '4', '5']
+    },
+    drawOneCard() {
+      return '6'
+    },
+  }
+}
+
+function WinnerCalculator() {
+  return {
+    calculateWinningPlayer: () => [{ playerId: 2 }],
+  }
+}
+
 exports.Chat = Chat
+exports.PokerDeck = PokerDeck
+exports.WinnerCalculator = WinnerCalculator

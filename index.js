@@ -96,6 +96,14 @@ io.on('connection', (socket) => {
         state.print(chat)
       }
 
+      if (exec === '!updatebb') {
+        const smallBlind = parseInt(commandLine[1], 10)
+        const bigBlind = parseInt(commandLine[2], 10)
+        const currentGame = games[currentUser.room]
+        const state = currentGame.updateBlinds(smallBlind, bigBlind, currentUser)
+        state.print(chat)
+      }
+
       if (exec === '!call') {
         const currentGame = games[currentUser.room]
         const state = currentGame.call(currentUser, chat)

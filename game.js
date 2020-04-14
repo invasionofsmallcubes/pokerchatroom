@@ -9,6 +9,7 @@ const RaiseState = require('./raiseState')
 const WinningMultiState = require('./winningMultiState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
+const BlindUpdatedState = require('./blindUpdatedState')
 
 function Game(owner, id, deck, winnerCalculator) {
   return {
@@ -28,6 +29,14 @@ function Game(owner, id, deck, winnerCalculator) {
     // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
     deck,
+    updateBlinds(smallBlind, bigBlind, user) {
+      if (this.owner === user) {
+        this.smallBlind = smallBlind
+        this.bigBlind = bigBlind
+        return BlindUpdatedState(this.id, smallBlind, bigBlind)
+      }
+      return ErrorState(this.id, 'Only the owner can change the state')
+    },
     addPlayer(user) {
       if (this.hasNotStartedYet) {
         this.players.push(Player(user, 100))

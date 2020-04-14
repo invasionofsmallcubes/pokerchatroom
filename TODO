@@ -1,8 +1,9 @@
 # Stuff to do:
-  ☐ plan next round
   ☐ block betting after win and before reset
-  ☐ manually setup small and big blind
+  ☐ plan next round
+  ✔ manually setup small and big blind @done(20-04-14 19:53)
   ☐ move betting inside player
+  ☐ update docs
   ☐ refactor BootStrap test state, to use the comparison
   ☐ refactor CallState test state, to use the mock
   ☐ refactor FoldState test state, to use the mock
