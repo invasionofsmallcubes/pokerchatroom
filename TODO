@@ -1,5 +1,4 @@
 # Stuff to do:
-  ☐ show winners on the UI
   ☐ plan next round
   ☐ block betting after win and before reset
   ☐ manually setup small and big blind
@@ -7,6 +6,7 @@
   ☐ refactor BootStrap test state, to use the comparison
   ☐ refactor CallState test state, to use the mock
   ☐ refactor FoldState test state, to use the mock
+  ✔ show winners on the UI @done(20-04-14 19:18)
   ✔ put cards and pool prize in the table in the ui @done(20-04-13 16:44)
   ☐ nicer UI
       ☐ change font size

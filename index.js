@@ -67,53 +67,56 @@ io.on('connection', (socket) => {
   socket.on(CMD, (command) => {
     const commandLine = command.split(' ')
     const exec = commandLine[0]
+    try {
+      if (exec === '!create') {
+        // TODO: disallow people from creating another game if already in one
+        // TODO: disallow to start if less than 2 players
+        const roomId = generate()
+        currentUser = changeRoom(socket, roomId, chat)
+        createGame(currentUser, roomId)
+      }
 
-    if (exec === '!create') {
-      // TODO: disallow people from creating another game if already in one
-      // TODO: disallow to start if less than 2 players
-      const roomId = generate()
-      currentUser = changeRoom(socket, roomId, chat)
-      createGame(currentUser, roomId)
-    }
+      if (exec === '!join') {
+        // TODO: disallow people from joining if game has started
+        // TODO: disallow people from joining another game if already in one
+        const roomId = commandLine[1]
+        currentUser = changeRoom(socket, roomId, chat)
+        addPlayerToGame(currentUser, roomId)
+      }
 
-    if (exec === '!join') {
-      // TODO: disallow people from joining if game has started
-      // TODO: disallow people from joining another game if already in one
-      const roomId = commandLine[1]
-      currentUser = changeRoom(socket, roomId, chat)
-      addPlayerToGame(currentUser, roomId)
-    }
+      if (exec === '!start') {
+        const state = games[currentUser.room].bootstrapGame(currentUser)
+        state.print(chat)
+      }
 
-    if (exec === '!start') {
-      const state = games[currentUser.room].bootstrapGame(currentUser)
-      state.print(chat)
-    }
+      if (exec === '!raise') {
+        const amount = parseInt(commandLine[1], 10)
+        const currentGame = games[currentUser.room]
+        const state = currentGame.raise(amount, currentUser, chat)
+        state.print(chat)
+      }
 
-    if (exec === '!raise') {
-      const amount = parseInt(commandLine[1], 10)
-      const currentGame = games[currentUser.room]
-      const state = currentGame.raise(amount, currentUser, chat)
-      state.print(chat)
-    }
+      if (exec === '!call') {
+        const currentGame = games[currentUser.room]
+        const state = currentGame.call(currentUser, chat)
+        state.print(chat)
+      }
 
-    if (exec === '!call') {
-      const currentGame = games[currentUser.room]
-      const state = currentGame.call(currentUser, chat)
-      state.print(chat)
-    }
+      if (exec === '!fold') {
+        const currentGame = games[currentUser.room]
+        const state = currentGame.fold(currentUser)
+        state.print(chat)
+      }
 
-    if (exec === '!fold') {
-      const currentGame = games[currentUser.room]
-      const state = currentGame.fold(currentUser)
-      state.print(chat)
-    }
-
-    if (debug && exec === '!debug') {
-      const currentRoom = Object.keys(socket.rooms)[0]
-      chat.toSelf(socket.id, `currentRoom: ${JSON.stringify(currentRoom)}`)
-      chat.toSelf(socket.id, `games: ${JSON.stringify(games)}`)
-      chat.toSelf(socket.id, `users: ${JSON.stringify(users)}`)
-      chat.toSelf(socket.id, `whomai: ${socket.id}`)
+      if (debug && exec === '!debug') {
+        const currentRoom = Object.keys(socket.rooms)[0]
+        chat.toSelf(socket.id, `currentRoom: ${JSON.stringify(currentRoom)}`)
+        chat.toSelf(socket.id, `games: ${JSON.stringify(games)}`)
+        chat.toSelf(socket.id, `users: ${JSON.stringify(users)}`)
+        chat.toSelf(socket.id, `whomai: ${socket.id}`)
+      }
+    } catch (error) {
+      chat.toSelf(socket.id, `You did something wrong! error is ${error}`)
     }
   })
 })
