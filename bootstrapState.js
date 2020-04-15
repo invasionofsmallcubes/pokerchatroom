@@ -39,6 +39,7 @@ function BootstrapState(
         )
       }
       this.nextState.print(chat)
+      chat.toRoomInTopic(this.roomId, '', 'update-common-cards')
     },
   }
 }

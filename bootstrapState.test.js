@@ -62,4 +62,9 @@ test('I can send messages', () => {
     poolPrize: 15,
     moneyLeft: 20,
   })
+
+  expect(chat.toRoomInTopic.mock.calls.length).toBe(1)
+  expect(chat.toRoomInTopic.mock.calls[0][0]).toBe(room)
+  expect(chat.toRoomInTopic.mock.calls[0][1]).toBe('')
+  expect(chat.toRoomInTopic.mock.calls[0][2]).toBe('update-common-cards')
 })
