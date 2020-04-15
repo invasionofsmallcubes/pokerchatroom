@@ -29,6 +29,52 @@ function Game(owner, id, deck, winnerCalculator) {
     // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
     deck,
+    tableSetup() {
+      this.hasNotStartedYet = false
+      this.dealer = this.round % this.playerSize
+      const smallBlindIdx = (this.dealer + 1) % this.playerSize
+      const bigBlindIdx = (this.dealer + 2) % this.playerSize
+      this.players[smallBlindIdx].money -= this.smallBlind
+      this.players[smallBlindIdx].bet += this.smallBlind
+      this.players[bigBlindIdx].money -= this.bigBlind
+      this.players[bigBlindIdx].bet += this.bigBlind
+      this.poolPrize = this.bigBlind + this.smallBlind
+      this.waitingPlayer = (this.dealer + 3) % this.playerSize
+      this.highestBet = this.bigBlind
+      this.lastPlayerInTurn = bigBlindIdx
+      for (let i = 0; i < this.playerSize; i += 1) {
+        const handPlayer = this.players[(this.dealer + i) % this.playerSize]
+        handPlayer.hand = this.deck.drawTwoCards()
+      }
+
+      return BootstrapState(
+        owner.name,
+        this.id,
+        this.players[this.dealer].user.name,
+        this.players[smallBlindIdx].user.name,
+        this.players[bigBlindIdx].user.name,
+        this.poolPrize,
+        this.players.map((player) => ({
+          id: player.user.id,
+          cards: player.hand,
+          moneyLeft: player.money,
+        })),
+        WaitingState(
+          this.id,
+          this.players[this.waitingPlayer].user.name,
+          this.players[this.waitingPlayer].user.id
+        )
+      )
+    },
+    nextTurn(userAsking) {
+      if (this.owner === userAsking) {
+        this.round += 1
+        this.currentStep = 0
+        this.poolPrize = 0
+        return this.tableSetup(this.round)
+      }
+      return ErrorState(userAsking.id, 'You cannot next a game that you did not create')
+    },
     updateBlinds(smallBlind, bigBlind, user) {
       if (this.owner === user) {
         this.smallBlind = smallBlind
@@ -182,43 +228,9 @@ function Game(owner, id, deck, winnerCalculator) {
     },
     bootstrapGame(userAsking) {
       if (this.owner === userAsking) {
-        this.hasNotStartedYet = false
-        this.hasNotStartedYet = false
         this.round = 0
-        this.dealer = this.round % this.playerSize
-        const smallBlindIdx = (this.dealer + 1) % this.playerSize
-        const bigBlindIdx = (this.dealer + 2) % this.playerSize
-        this.players[smallBlindIdx].money -= this.smallBlind
-        this.players[smallBlindIdx].bet += this.smallBlind
-        this.players[bigBlindIdx].money -= this.bigBlind
-        this.players[bigBlindIdx].bet += this.bigBlind
-        this.poolPrize = this.bigBlind + this.smallBlind
-        this.waitingPlayer = (this.dealer + 3) % this.playerSize
-        this.highestBet = this.bigBlind
-        this.lastPlayerInTurn = bigBlindIdx
-        for (let i = 0; i < this.playerSize; i += 1) {
-          const handPlayer = this.players[(this.dealer + i) % this.playerSize]
-          handPlayer.hand = this.deck.drawTwoCards()
-        }
-
-        return BootstrapState(
-          owner.name,
-          this.id,
-          this.players[this.dealer].user.name,
-          this.players[smallBlindIdx].user.name,
-          this.players[bigBlindIdx].user.name,
-          this.poolPrize,
-          this.players.map((player) => ({
-            id: player.user.id,
-            cards: player.hand,
-            moneyLeft: player.money,
-          })),
-          WaitingState(
-            this.id,
-            this.players[this.waitingPlayer].user.name,
-            this.players[this.waitingPlayer].user.id
-          )
-        )
+        this.hasNotStartedYet = false
+        return this.tableSetup()
       }
       return ErrorState(userAsking.id, 'You cannot start a game that you did not create')
     },

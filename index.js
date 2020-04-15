@@ -84,6 +84,12 @@ io.on('connection', (socket) => {
         addPlayerToGame(currentUser, roomId)
       }
 
+      if (exec === '!next') {
+        const currentGame = games[currentUser.room]
+        const state = currentGame.nextTurn(currentUser)
+        state.print(chat)
+      }
+
       if (exec === '!start') {
         const state = games[currentUser.room].bootstrapGame(currentUser)
         state.print(chat)
