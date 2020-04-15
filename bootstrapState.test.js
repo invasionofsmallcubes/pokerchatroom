@@ -1,15 +1,5 @@
 const BootstrapState = require('./bootstrapState')
-
-function Chat() {
-  return {
-    // eslint-disable-next-line no-unused-vars
-    game: jest.fn((roomName, message) => {}),
-    // eslint-disable-next-line no-unused-vars
-    toSelf: jest.fn((id, message) => {}),
-    // eslint-disable-next-line no-unused-vars
-    toSelfInTopic: jest.fn((id, message, topic) => {}),
-  }
-}
+const t = require('./testhelpers')
 
 function WaitingState() {
   return {
@@ -36,7 +26,7 @@ test('I can send messages', () => {
     waitingState
   )
 
-  const chat = Chat()
+  const chat = t.Chat()
   bootstrapState.print(chat)
 
   expect(chat.game.mock.calls.length).toBe(6)
