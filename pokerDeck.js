@@ -1,7 +1,7 @@
 const Deck = require('card-deck')
 
-function PokerDeck() {
-  const deck = new Deck()
+function resetDeck() {
+  const currentDeck = new Deck()
   const seeds = ['c', 'h', 's', 'd']
   const value = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
   const cards = []
@@ -10,8 +10,13 @@ function PokerDeck() {
       cards.push(value[j] + [seeds[i]])
     }
   }
-  deck.cards(cards)
-  deck.shuffle()
+  currentDeck.cards(cards)
+  currentDeck.shuffle()
+  return currentDeck
+}
+
+function PokerDeck() {
+  const deck = resetDeck()
   return {
     d: deck,
     drawTwoCards() {
@@ -26,6 +31,9 @@ function PokerDeck() {
     },
     remainings() {
       return this.d.remaining()
+    },
+    resetDeck() {
+      this.d = resetDeck()
     },
   }
 }

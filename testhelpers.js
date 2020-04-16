@@ -24,6 +24,7 @@ function PokerDeck() {
     drawOneCard() {
       return '6'
     },
+    resetDeck: jest.fn(() => {}),
   }
 }
 

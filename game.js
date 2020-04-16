@@ -71,6 +71,7 @@ function Game(owner, id, deck, winnerCalculator) {
         this.round += 1
         this.currentStep = 0
         this.poolPrize = 0
+        this.deck.resetDeck()
         return this.tableSetup(this.round)
       }
       return ErrorState(userAsking.id, 'You cannot next a game that you did not create')

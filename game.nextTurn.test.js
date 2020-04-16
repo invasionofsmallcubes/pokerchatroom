@@ -9,7 +9,8 @@ const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
 
 test('I can move to next step', () => {
-  const game = Game(user, room, t.PokerDeck(), t.WinnerCalculator())
+  const pokerDeck = t.PokerDeck()
+  const game = Game(user, room, pokerDeck, t.WinnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)
@@ -30,6 +31,7 @@ test('I can move to next step', () => {
   expect(game.lookupPlayer(user3).money).toBe(100)
   expect(game.lookupPlayer(user).money).toBe(90)
   expect(state.dealerName).toBe(user2.name)
+  expect(pokerDeck.resetDeck.mock.calls.length).toBe(1)
 })
 
 test("I can't go to next turn if I'm not the owner", () => {
