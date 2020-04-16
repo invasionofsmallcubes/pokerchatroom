@@ -1,5 +1,5 @@
 const BootstrapState = require('./bootstrapState')
-const t = require('./testhelpers')
+const t = require('./testHelpers')
 
 function WaitingState() {
   return {

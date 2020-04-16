@@ -1,11 +1,13 @@
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const cron = require('node-cron')
 const User = require('./user')
 const Game = require('./game')
 const Chat = require('./chat')
 const PokerDeck = require('./pokerDeck')
 const WinnerCalculator = require('./winnerCalculator')
+const tp = require('./timePassed')
 
 const port = process.env.PORT || 3000
 const debug = process.env.DEBUG || true
@@ -42,7 +44,13 @@ function addPlayerToGame(player, id) {
 }
 
 function createGame(owner, id) {
-  games[id] = Game(owner, id, PokerDeck(), WinnerCalculator())
+  games[id] = Game(
+    owner,
+    id,
+    PokerDeck(),
+    WinnerCalculator(),
+    tp.TimePassed(Math.floor(Date.now() / 1000))
+  )
   addPlayerToGame(owner, id)
 }
 
@@ -73,7 +81,7 @@ io.on('connection', (socket) => {
         // TODO: disallow to start if less than 2 players
         const roomId = generate()
         currentUser = changeRoom(socket, roomId, chat)
-        createGame(currentUser, roomId)
+        createGame(currentUser, roomId, chat)
       }
 
       if (exec === '!join') {
@@ -93,6 +101,9 @@ io.on('connection', (socket) => {
       if (exec === '!start') {
         const state = games[currentUser.room].bootstrapGame(currentUser)
         state.print(chat)
+        cron.schedule('*/12 * * * *', () => {
+          games[currentUser.room].elapsedTime().print(chat)
+        })
       }
 
       if (exec === '!raise') {

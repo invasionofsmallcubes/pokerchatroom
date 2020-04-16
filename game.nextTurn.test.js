@@ -1,7 +1,7 @@
 const Game = require('./game')
 const User = require('./user')
 
-const t = require('./testhelpers')
+const t = require('./testHelpers')
 
 const room = 'room'
 const user = User('name', room, 'id')

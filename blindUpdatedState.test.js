@@ -1,4 +1,4 @@
-const t = require('./testhelpers')
+const t = require('./testHelpers')
 const BlindUpdatedState = require('./blindUpdatedState')
 
 test('I can update the chat about the blinds', () => {

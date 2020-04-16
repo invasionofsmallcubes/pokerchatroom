@@ -10,8 +10,9 @@ const WinningMultiState = require('./winningMultiState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
 const BlindUpdatedState = require('./blindUpdatedState')
+const ElapsedTimeState = require('./elapsedTimeState')
 
-function Game(owner, id, deck, winnerCalculator) {
+function Game(owner, id, deck, winnerCalculator, timePassed) {
   return {
     owner,
     id,
@@ -26,6 +27,7 @@ function Game(owner, id, deck, winnerCalculator) {
     highestBet: 0,
     poolPrize: 0,
     winnerCalculator,
+    timePassed,
     // preflop = 0, flop = 1, turn = 2, river = 3, showdown = 4
     currentStep: 0,
     deck,
@@ -75,6 +77,9 @@ function Game(owner, id, deck, winnerCalculator) {
         return this.tableSetup(this.round)
       }
       return ErrorState(userAsking.id, 'You cannot next a game that you did not create')
+    },
+    elapsedTime() {
+      return ElapsedTimeState(this.id, `${timePassed.count()}`)
     },
     updateBlinds(smallBlind, bigBlind, user) {
       if (this.owner === user) {

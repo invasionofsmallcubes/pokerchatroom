@@ -34,6 +34,18 @@ function WinnerCalculator() {
   }
 }
 
+function TimePassed() {
+  return {
+    count: jest.fn(() => '1 minute'),
+  }
+}
+
+function str(object) {
+  return JSON.stringify(object)
+}
+
 exports.Chat = Chat
 exports.PokerDeck = PokerDeck
 exports.WinnerCalculator = WinnerCalculator
+exports.TimePassed = TimePassed
+exports.str = str

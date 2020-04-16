@@ -1,4 +1,4 @@
-const t = require('./testhelpers')
+const t = require('./testHelpers')
 const WinningMultiState = require('./winningMultiState')
 
 const winningPlayers = [

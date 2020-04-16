@@ -1,6 +1,6 @@
 const Game = require('./game')
 const User = require('./user')
-const t = require('./testhelpers')
+const t = require('./testHelpers')
 const BlindUpdatedState = require('./blindUpdatedState')
 const ErrorState = require('./errorState')
 
