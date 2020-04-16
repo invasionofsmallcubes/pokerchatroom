@@ -24,7 +24,7 @@ test('I can print the message', () => {
   })
   const chat = Chat()
   callState.print(chat)
-  expect(chat.game.mock.calls.length).toBe(2)
+  expect(chat.game.mock.calls.length).toBe(3)
   expect(chat.game.mock.calls[0][0]).toBe('room')
   expect(chat.game.mock.calls[0][1]).toBe('Player name2 has called (10)')
   expect(chat.game.mock.calls[1][0]).toBe('room')
