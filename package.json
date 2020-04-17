@@ -8,6 +8,7 @@
     "eslint-config-airbnb": "^18.1.0",
     "express": "^4.15.2",
     "node-cron": "^2.0.3",
+    "openode": "^2.0.17",
     "pokersolver": "^2.1.3",
     "socket.io": "^2.3.0"
   },
@@ -15,7 +16,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "pretest": "eslint --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "openode deploy"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
