@@ -105,6 +105,14 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
     lookupPlayer(user) {
       return this.players.filter((p) => p.user.id === user.id)[0]
     },
+    lookupPlayerIdx(user) {
+      for (let idx = 0; idx < this.playerSize; idx += 1) {
+        if (this.players[idx].user.id === user.id) {
+          return idx
+        }
+      }
+      return -1
+    },
     isPlayerInTurn(user) {
       const currentPlayer = this.players[this.waitingPlayer]
       return user.id === currentPlayer.user.id
@@ -233,6 +241,7 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
         currentPlayer.money -= amount
         currentPlayer.bet = amount
         this.poolPrize += amount
+        this.lastPlayerInTurn = (this.waitingPlayer + this.playerSize - 1) % this.playerSize
         return RaiseState(
           user.name,
           this.id,
