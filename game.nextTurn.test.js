@@ -31,7 +31,13 @@ test('I can move to next step', () => {
   expect(game.lookupPlayer(user3).money).toBe(100)
   expect(game.lookupPlayer(user).money).toBe(90)
   expect(state.dealerName).toBe(user2.name)
+  expect(game.players[0].bet).toBe(10)
+  expect(game.players[1].bet).toBe(0)
+  expect(game.players[2].bet).toBe(5)
   expect(pokerDeck.resetDeck.mock.calls.length).toBe(1)
+  for (let i = 0; i < game.players.length; i += 1) {
+    expect(game.players[i].hasFolded).toBe(false)
+  }
 })
 
 test("I can't go to next turn if I'm not the owner", () => {

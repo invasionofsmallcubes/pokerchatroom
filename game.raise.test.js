@@ -38,10 +38,18 @@ test("I cannot bet on the game, if it's not my turn", () => {
   expect(errorState.message).toBe("You cannot !raise because it's not your turn")
 })
 
+test("I cannot bet on the game, if it's lower than bet", () => {
+  const errorState = game.raise(5, user)
+  expect(errorState.room).toBe('id')
+  expect(errorState.message).toBe(
+    `You cannot !raise because you have to raise more than ${game.highestBet + game.bigBlind}`
+  )
+})
+
 test("I can bet on the game, if it's my turn", () => {
-  const amount = 15
-  const poolPrize = 30
-  const money = 85
+  const amount = 20
+  const poolPrize = 35
+  const money = 80
   const gameState = game.raise(amount, user)
   expect(game.lookupPlayer(user).money).toBe(money)
   expect(game.lookupPlayer(user).bet).toBe(amount)

@@ -35,6 +35,10 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
     tableSetup() {
       this.hasNotStartedYet = false
       this.dealer = this.round % this.playerSize
+      for (let i = 0; i < this.playerSize; i += 1) {
+        this.players[i].hasFolded = false
+        this.players[i].bet = 0
+      }
       const smallBlindIdx = (this.dealer + 1) % this.playerSize
       const bigBlindIdx = (this.dealer + 2) % this.playerSize
       this.players[smallBlindIdx].money -= this.smallBlind
@@ -218,8 +222,16 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
     raise(amount, user) {
       return this.pokerAction(user, 'raise', () => {
         const currentPlayer = this.lookupPlayer(user)
+        if (amount < this.highestBet + this.bigBlind) {
+          return ErrorState(
+            user.id,
+            `You cannot !raise because you have to raise more than ${
+              this.highestBet + this.bigBlind
+            }`
+          )
+        }
         currentPlayer.money -= amount
-        currentPlayer.bet += amount
+        currentPlayer.bet = amount
         this.poolPrize += amount
         return RaiseState(
           user.name,

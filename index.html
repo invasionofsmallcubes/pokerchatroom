@@ -6,7 +6,7 @@
       href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
       type="text/css"
     />
-    <title>PockerChatRoom</title>
+    <title>PokerChatRoom</title>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css" />
@@ -14,14 +14,13 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css" />
     <script src='https://meet.jit.si/external_api.js'></script>
     <style>
+
+      body {
+        height: 100%;
+      }
       .main-container {
         padding: 5px;
         display: flex;
-      }
-
-      .main-container * {
-        font-size: 30px;
-        font: 'Roboto';
       }
 
       .description {
@@ -91,27 +90,32 @@
         padding: 10px;
         width: 100%;
       }
-      #chatbox {
-        overflow: none;
-        position: relative;
+      .chatbox {
         width: 100%;
-        height: 400px;
-      }
-      #chatmessages {
-        overflow: auto;
+        height: 20%;
         position: absolute;
         bottom: 0;
-        max-height: 400px;
-        flex-grow: 3; 
+      }
+      .chatmessages {
+        overflow: auto;
+        position: absolute;
+        bottom: 400;
+        max-height: 80%;
+        overflow-y: scroll;
+        flex-grow: 2; 
+        width: 100%;
       }
       .gamecontainer {
         width: 100%;
+        height: 100%;
       }
       .playground {
         display: none;
       }
       .chatvideo {
-        flex-grow: 1; 
+        flex-grow: 2; 
+        resize: horizontal;
+        height: 100%;
       }
     </style>
   </head>
@@ -120,8 +124,8 @@
     <div class="main-container">
       <div id="chatvideo" class="chatvideo"></div>
       <div class="gamecontainer">
-        <div class="chatmessages">
-          <ul id="messages"></ul>
+        <div id="chatmessages" class="chatmessages">
+          <ul id="messages" class="messages"></ul>
           <div id="description" class="description">
             <p>What you can do:</p>
             <ul>
@@ -225,7 +229,7 @@
         elem('description').style.display = display === 'block' ? 'none' : 'block'
         const text = elem('help-button').textContent
         elem('help-button').textContent = text === 'help' ? 'help_outline' : 'help'
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
 
       const form = elem('myForm')
@@ -250,7 +254,7 @@
           const h = message.hands[i]
           addMessage(messagesDiv, `${h.name} has ${h.cards}`)
         }
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
       socket.on(UPDATE_MONEY_LEFT, function (message) {
         elem('money-left').textContent = message.money
@@ -269,18 +273,18 @@
       })
       socket.on(CHAT_MESSAGE, function (msg) {
         addMessage(messagesDiv, `${msg.name}: ${msg.msg}`)
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
       socket.on(CHAT_MESSAGE_SELF, function (msg) {
         addMessage(messagesDiv, `You said: ${msg.msg}`)
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
       socket.on(JOIN_VIDEO_CHAT, function(msg) {
         const domain = 'meet.jit.si';
         const options = {
           roomName: msg.room,
-          width: 200,
-          height: 700,
+          width: 400,
+          height: document.body.scrollHeight,
           parentNode: document.querySelector('#chatvideo') 
         }
         const api = new JitsiMeetExternalAPI(domain, options)
@@ -290,15 +294,15 @@
           messagesDiv,
           `<span style="font-size:14px;">only visible to you<br/></span><b>${msg}</b>`
         )
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
       socket.on(GAME_MESSAGE, function (msg) {
         addMessage(messagesDiv, `<i>${msg}</i>`)
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
       socket.on(PERSONAL_MESSAGE, function (msg) {
         addMessage(messagesDiv, `<span><i>only visible to you</i><br/></span>${msg}`)
-        window.scrollTo(0, document.body.scrollHeight)
+        elem('chatmessages').scrollTo(0, elem('chatmessages').scrollHeight)
       })
     </script>
   </body>
