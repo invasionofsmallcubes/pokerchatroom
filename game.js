@@ -11,6 +11,7 @@ const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
 const BlindUpdatedState = require('./blindUpdatedState')
 const ElapsedTimeState = require('./elapsedTimeState')
+const PlayerJoinedState = require('./playerJoinedState')
 
 function Game(owner, id, deck, winnerCalculator, timePassed) {
   return {
@@ -93,6 +94,7 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
       if (this.hasNotStartedYet) {
         this.players.push(Player(user, 100))
         this.playerSize += 1
+        return PlayerJoinedState(this.id, user.id)
       }
       return this.hasNotStartedYet
     },

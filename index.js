@@ -40,7 +40,7 @@ function changeRoom(socket, roomId, chat) {
 }
 
 function addPlayerToGame(player, id) {
-  games[id].addPlayer(player)
+  return games[id].addPlayer(player)
 }
 
 function createGame(owner, id) {
@@ -51,7 +51,7 @@ function createGame(owner, id) {
     WinnerCalculator(),
     tp.TimePassed(Math.floor(Date.now() / 1000))
   )
-  addPlayerToGame(owner, id)
+  return addPlayerToGame(owner, id)
 }
 
 app.get('/', (req, res) => {
@@ -81,7 +81,8 @@ io.on('connection', (socket) => {
         // TODO: disallow to start if less than 2 players
         const roomId = generate()
         currentUser = changeRoom(socket, roomId, chat)
-        createGame(currentUser, roomId, chat)
+        const state = createGame(currentUser, roomId, chat)
+        state.print(chat)
       }
 
       if (exec === '!join') {
@@ -89,7 +90,8 @@ io.on('connection', (socket) => {
         // TODO: disallow people from joining another game if already in one
         const roomId = commandLine[1]
         currentUser = changeRoom(socket, roomId, chat)
-        addPlayerToGame(currentUser, roomId)
+        const state = addPlayerToGame(currentUser, roomId)
+        state.print(chat)
       }
 
       if (exec === '!next') {

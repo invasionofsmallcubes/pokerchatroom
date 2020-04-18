@@ -12,9 +12,11 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css" />
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-teal.min.css" />
+    <script src='https://meet.jit.si/external_api.js'></script>
     <style>
       .main-container {
         padding: 5px;
+        display: flex;
       }
 
       .main-container * {
@@ -100,77 +102,87 @@
         position: absolute;
         bottom: 0;
         max-height: 400px;
+        flex-grow: 3; 
+      }
+      .gamecontainer {
+        width: 100%;
       }
       .playground {
         display: none;
+      }
+      .chatvideo {
+        flex-grow: 1; 
       }
     </style>
   </head>
 
   <body>
     <div class="main-container">
-      <div class="chatmessages">
-        <ul id="messages"></ul>
-        <div id="description" class="description">
-          <p>What you can do:</p>
-          <ul>
-            <li>send a normal message</li>
-            <li>
-              send a command, you need to put a ! in front of the command:
-              <ul>
-                <li>
-                  <pre>!create</pre>
-                  allows you to create a new match. The bot will give a code to send to your
-                  friends.
-                </li>
-                <li>
-                  <pre>!join $code</pre>
-                  allows you to join a match. Only the owner can start a match.
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="chatbox">
-        <div class="formello">
-          <div id="playground" class="divTable playground">
-            <div class="divTableBody">
-              <div class="divTableRow">
-                <div class="divTableCell">Your Hand</div>
-                <div class="divTableCell">Cards on the table</div>
-                <div class="divTableCell">Prize</div>
-                <div class="divTableCell">Money</div>
-                <div class="divTableCell">Room</div>
-              </div>
-              <div class="divTableRow">
-                <div id="hand" class="divTableCell">&nbsp;</div>
-                <div id="table" class="divTableCell">&nbsp;</div>
-                <div id="pool-prize" class="divTableCell">&nbsp;</div>
-                <div id="money-left" class="divTableCell">&nbsp;</div>
-                <div id="room" class="divTableCell">&nbsp;</div>
-              </div>
-            </div>
+      <div id="chatvideo" class="chatvideo"></div>
+      <div class="gamecontainer">
+        <div class="chatmessages">
+          <ul id="messages"></ul>
+          <div id="description" class="description">
+            <p>What you can do:</p>
+            <ul>
+              <li>send a normal message</li>
+              <li>
+                send a command, you need to put a ! in front of the command:
+                <ul>
+                  <li>
+                    <pre>!create</pre>
+                    allows you to create a new match. The bot will give a code to send to your
+                    friends.
+                  </li>
+                  <li>
+                    <pre>!join $code</pre>
+                    allows you to join a match. Only the owner can start a match.
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </div>
-          <div id="miniformello" class="miniformello">
-            <div>
-              <button
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
-                id="help"
-              >
-                <i id="help-button" class="material-icons">help_outline</i>
-              </button>
-            </div>
-            <div style="width: 100%;">
-              <form id="myForm" action="" class="frm">
-                <div class="mdl-textfield mdl-js-textfield" style="width: 100%;">
-                  <input class="mdl-textfield__input" type="text" id="m" autocomplete="off" />
-                  <label class="mdl-textfield__label" for="sample1" />
+        </div>
+        <div class="chatbox">
+          <div class="formello">
+            <div id="playground" class="divTable playground">
+              <div class="divTableBody">
+                <div class="divTableRow">
+                  <div class="divTableCell">Your Hand</div>
+                  <div class="divTableCell">Cards on the table</div>
+                  <div class="divTableCell">Prize</div>
+                  <div class="divTableCell">Money</div>
+                  <div class="divTableCell">Room</div>
                 </div>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
-                  <i class="material-icons">send</i>
+                <div class="divTableRow">
+                  <div id="hand" class="divTableCell">&nbsp;</div>
+                  <div id="table" class="divTableCell">&nbsp;</div>
+                  <div id="pool-prize" class="divTableCell">&nbsp;</div>
+                  <div id="money-left" class="divTableCell">&nbsp;</div>
+                  <div id="room" class="divTableCell">&nbsp;</div>
+                </div>
+              </div>
+            </div>
+            <div id="miniformello" class="miniformello">
+              <div>
+                <button
+                  class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+                  id="help"
+                >
+                  <i id="help-button" class="material-icons">help_outline</i>
                 </button>
-              </form>
+              </div>
+              <div style="width: 100%;">
+                <form id="myForm" action="" class="frm">
+                  <div class="mdl-textfield mdl-js-textfield" style="width: 100%;">
+                    <input class="mdl-textfield__input" type="text" id="m" autocomplete="off" />
+                    <label class="mdl-textfield__label" for="sample1" />
+                  </div>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+                    <i class="material-icons">send</i>
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -191,6 +203,7 @@
       const UPDATE_POOL_PRIZE = 'update-pool-prize'
       const UPDATE_COMMON_CARDS = 'update-common-cards'
       const SHOW_PLAYING_PLAYERS = 'show-playing-players'
+      const JOIN_VIDEO_CHAT = 'join-video-chat'
 
       function elem(id) {
         return document.getElementById(id)
@@ -261,6 +274,16 @@
       socket.on(CHAT_MESSAGE_SELF, function (msg) {
         addMessage(messagesDiv, `You said: ${msg.msg}`)
         window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on(JOIN_VIDEO_CHAT, function(msg) {
+        const domain = 'meet.jit.si';
+        const options = {
+          roomName: msg.room,
+          width: 200,
+          height: 700,
+          parentNode: document.querySelector('#chatvideo') 
+        }
+        const api = new JitsiMeetExternalAPI(domain, options)
       })
       socket.on(ERROR_MESSAGE, function (msg) {
         addMessage(
