@@ -8,6 +8,7 @@ const Chat = require('./chat')
 const PokerDeck = require('./pokerDeck')
 const WinnerCalculator = require('./winnerCalculator')
 const tp = require('./timePassed')
+const ErrorState = require('./errorState')
 
 const port = process.env.PORT || 3000
 const debug = process.env.DEBUG || true
@@ -110,9 +111,13 @@ io.on('connection', (socket) => {
 
       if (exec === '!raise') {
         const amount = parseInt(commandLine[1], 10)
-        const currentGame = games[currentUser.room]
-        const state = currentGame.raise(amount, currentUser, chat)
-        state.print(chat)
+        if (Number.isNaN(amount)) {
+          ErrorState(socket.id, `${amount} is not a number`).print(chat)
+        } else {
+          const currentGame = games[currentUser.room]
+          const state = currentGame.raise(amount, currentUser, chat)
+          state.print(chat)
+        }
       }
 
       if (exec === '!updatebb') {
