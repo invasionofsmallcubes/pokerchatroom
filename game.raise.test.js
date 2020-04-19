@@ -69,3 +69,28 @@ test("I can bet on the game, if it's my turn", () => {
   )
   expect(JSON.stringify(gameState)).toBe(JSON.stringify(expectedState))
 })
+
+test("I can bet on the game, if it's my turn after another one folded", () => {
+  const amount = 20
+  const poolPrize = 35
+  const money = 75
+  game.fold(user)
+  const gameState = game.raise(amount, user2)
+  expect(game.lookupPlayer(user2).money).toBe(money)
+  expect(game.lookupPlayer(user2).bet).toBe(25)
+  expect(game.poolPrize).toBe(poolPrize)
+  expect(game.lastPlayerInTurn).toBe(2)
+
+  const expectedState = RaiseState(
+    user2.name,
+    room,
+    amount,
+    WaitingState(room, user3.name, user3.id),
+    {
+      money,
+      id: user2.id,
+    },
+    poolPrize
+  )
+  expect(JSON.stringify(gameState)).toBe(JSON.stringify(expectedState))
+})
