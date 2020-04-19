@@ -10,7 +10,7 @@ const user3 = User('name3', room, 'id3')
 
 test('I can move to next step', () => {
   const pokerDeck = t.PokerDeck()
-  const game = Game(user, room, pokerDeck, t.WinnerCalculator2())
+  const game = Game(user, room, pokerDeck, t.WinnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)
@@ -41,7 +41,7 @@ test('I can move to next step', () => {
 })
 
 test("I can't go to next turn if I'm not the owner", () => {
-  const game = Game(user, room, t.PokerDeck(), t.WinnerCalculator2())
+  const game = Game(user, room, t.PokerDeck(), t.WinnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

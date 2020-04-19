@@ -28,7 +28,7 @@ function PokerDeck() {
   }
 }
 
-function WinnerCalculator2() {
+function WinnerCalculator() {
   return {
     // eslint-disable-next-line no-unused-vars
     calculateWinningPlayer: jest.fn((cardsExaminations) => [{ playerId: 2 }]),
@@ -48,5 +48,5 @@ function str(object) {
 exports.Chat = Chat
 exports.PokerDeck = PokerDeck
 exports.TimePassed = TimePassed
-exports.WinnerCalculator2 = WinnerCalculator2
+exports.WinnerCalculator = WinnerCalculator
 exports.str = str

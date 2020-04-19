@@ -35,7 +35,7 @@ function aWinningStateNoFold(money, poolPrize) {
 }
 
 beforeEach(() => {
-  game = Game(user, room, t.PokerDeck(), t.WinnerCalculator2())
+  game = Game(user, room, t.PokerDeck(), t.WinnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

@@ -10,7 +10,7 @@ const user3 = User('name3', room, 'id3')
 
 let game
 
-const winCalc = t.WinnerCalculator2()
+const winCalc = t.WinnerCalculator()
 
 beforeEach(() => {
   game = Game(user, room, t.PokerDeck(), winCalc)

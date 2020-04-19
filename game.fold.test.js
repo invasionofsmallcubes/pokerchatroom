@@ -1,6 +1,7 @@
 const Game = require('./game')
 const User = require('./user')
 const WaitingState = require('./waitingState')
+const t = require('./testHelpers')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -8,22 +9,8 @@ const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
 let game
 
-const pokerDeck = function PokerDeck() {
-  return {
-    drawTwoCards() {
-      return ['1', '2']
-    },
-    drawThreeCards() {
-      return ['3', '4', '5']
-    },
-    drawOneCard() {
-      return '6'
-    },
-  }
-}
-
 beforeEach(() => {
-  game = Game(user, room, pokerDeck())
+  game = Game(user, room, t.PokerDeck())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)
@@ -48,7 +35,7 @@ test("I cannot bet on the game, if it's not my turn", () => {
 test('The next player will be the one that has not already folded', () => {
   const user4 = User('name4', room, 'id4')
 
-  const game1 = Game(user, room, pokerDeck())
+  const game1 = Game(user, room, t.PokerDeck())
   game1.addPlayer(user)
   game1.addPlayer(user2)
   game1.addPlayer(user3)
