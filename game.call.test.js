@@ -54,7 +54,7 @@ test('I can call the higher bet on the table and it becomes a check', () => {
   expect(state.room).toBe('room')
   expect(state.checkingPlayer).toBe('name3')
   expect(state.nextState.nextState.room).toBe(room)
-  expect(state.nextState.nextState.nextPlayerName).toBe('name')
+  expect(state.nextState.nextState.nextPlayerName).toBe('name2')
 })
 
 test("I can't call the higher bet on the table when it's not my turn", () => {

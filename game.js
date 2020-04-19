@@ -138,6 +138,24 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
       const winners = this.winnerCalculator.calculateWinningPlayer(cardExaminations)
       return winners
     },
+    calculateNextPlayerForNextStep() {
+      for (let i = 1; i < this.playerSize; i += 1) {
+        // eslint-disable-next-line operator-linebreak
+        const temporaryWaitingPlayer = (this.dealer + i) % this.playerSize
+        if (!this.players[temporaryWaitingPlayer].hasFolded) {
+          this.lastPlayerInTurn = this.dealer
+          // TODO deve essere il giocatore prima del waiting player,
+          // TODO che è il dealer se non ha foldato.
+          this.waitingPlayer = temporaryWaitingPlayer
+          return WaitingState(
+            this.id,
+            this.players[temporaryWaitingPlayer].user.name,
+            this.players[temporaryWaitingPlayer].user.id
+          )
+        }
+      }
+      return ErrorState(this.id, 'Not found a next player')
+    },
     calculateNextPlayer() {
       for (let i = 1; i < this.playerSize; i += 1) {
         // eslint-disable-next-line operator-linebreak
@@ -190,7 +208,7 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
           this.cardsOnTable.push(this.deck.drawOneCard())
         }
         this.currentStep += 1
-        return NextState(this.cardsOnTable, this.id, this.calculateNextPlayer())
+        return NextState(this.cardsOnTable, this.id, this.calculateNextPlayerForNextStep())
       }
       return this.calculateNextPlayer()
     },

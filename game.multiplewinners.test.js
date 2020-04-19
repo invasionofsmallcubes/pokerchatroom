@@ -29,19 +29,19 @@ test('I am able to compute the showdown', () => {
   game.call(user3)
 
   // flop
-  game.call(user)
   game.call(user2)
   game.call(user3)
+  game.call(user)
 
   // turn
-  game.call(user)
   game.call(user2)
   game.call(user3)
+  game.call(user)
 
   // river
-  game.fold(user)
   game.call(user2)
-  const winningState = game.call(user3)
+  game.call(user3)
+  const winningState = game.fold(user)
 
   expect(game.currentStep).toBe(4)
   expect(game.poolPrize).toBe(30)

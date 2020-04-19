@@ -5,6 +5,7 @@ const Player = require('./player')
 const WaitingState = require('./waitingState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
+const CallState = require('./callState')
 const t = require('./testHelpers')
 
 const room = 'room'
@@ -47,7 +48,7 @@ test('I am able to compute flop', () => {
   game.call(user2)
   const nextState = game.call(user3)
 
-  const ws = WaitingState(room, user.name, user.id)
+  const ws = WaitingState(room, user2.name, user2.id)
   const ns = NextState(['3', '4', '5'], room, ws)
   const cs = CheckingState(user3.name, room, ns)
 
@@ -56,16 +57,32 @@ test('I am able to compute flop', () => {
   expect(game.currentStep).toBe(1)
 })
 
+test('I am able to compute flop with positions for next waiting player', () => {
+  game.raise(20, user)
+  game.call(user2)
+  const nextState = game.call(user3)
+
+  const ws = WaitingState(room, user2.name, user2.id)
+  const ns = NextState(['3', '4', '5'], room, ws)
+  const cs = CallState(user3.name, room, ns, 10, 60, { money: 80, id: user3.id })
+
+  expect(JSON.stringify(nextState)).toBe(JSON.stringify(cs))
+  expect(game.cardsOnTable).toEqual(['3', '4', '5'])
+  expect(game.currentStep).toBe(1)
+  expect(game.waitingPlayer).toBe(1)
+  expect(game.lastPlayerInTurn).toBe(0)
+})
+
 test('I am able to compute the turn', () => {
   game.call(user)
   game.call(user2)
   game.call(user3)
 
-  game.call(user)
   game.call(user2)
-  const nextState = game.call(user3)
+  game.call(user3)
+  const nextState = game.call(user)
 
-  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
+  expect(nextState.nextState.nextState.nextPlayerName).toBe('name2')
   expect(nextState.nextState.room).toBe(room)
   expect(nextState.nextState.cards).toEqual(['3', '4', '5', '6'])
   expect(game.cardsOnTable).toEqual(['3', '4', '5', '6'])
@@ -77,15 +94,15 @@ test('I am able to compute the flop', () => {
   game.call(user2)
   game.call(user3)
 
-  game.call(user)
   game.call(user2)
   game.call(user3)
-
   game.call(user)
-  game.call(user2)
-  const nextState = game.call(user3)
 
-  expect(nextState.nextState.nextState.nextPlayerName).toBe('name')
+  game.call(user2)
+  game.call(user3)
+  const nextState = game.call(user)
+
+  expect(nextState.nextState.nextState.nextPlayerName).toBe('name2')
   expect(nextState.nextState.room).toBe(room)
   expect(nextState.nextState.cards).toEqual(['3', '4', '5', '6', '6'])
   expect(game.cardsOnTable).toEqual(['3', '4', '5', '6', '6'])
@@ -99,19 +116,18 @@ test('I am able to compute the showdown', () => {
   game.call(user3)
 
   // flop
-  game.call(user)
   game.call(user2)
   game.call(user3)
+  game.call(user)
 
   // turn
-  game.call(user)
   game.call(user2)
   game.call(user3)
-
-  // river
   game.call(user)
+  // river
   game.call(user2)
-  const winningState = game.call(user3)
+  game.call(user3)
+  const winningState = game.call(user)
 
   expect(game.currentStep).toBe(4)
 
