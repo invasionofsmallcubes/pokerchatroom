@@ -47,6 +47,23 @@ test('I am able to compute flop', () => {
   game.call(user)
   game.call(user2)
   const nextState = game.call(user3)
+  expect(game.lastPlayerInTurn).toBe(0)
+
+  const ws = WaitingState(room, user2.name, user2.id)
+  const ns = NextState(['3', '4', '5'], room, ws)
+  const cs = CheckingState(user3.name, room, ns)
+
+  expect(JSON.stringify(nextState)).toBe(JSON.stringify(cs))
+  expect(game.cardsOnTable).toEqual(['3', '4', '5'])
+  expect(game.currentStep).toBe(1)
+})
+
+test('I am able to compute flop with folding', () => {
+  game.fold(user)
+  game.call(user2)
+  const nextState = game.call(user3)
+  expect(game.waitingPlayer).toBe(1)
+  expect(game.lastPlayerInTurn).toBe(2)
 
   const ws = WaitingState(room, user2.name, user2.id)
   const ns = NextState(['3', '4', '5'], room, ws)

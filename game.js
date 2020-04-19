@@ -143,9 +143,13 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
         // eslint-disable-next-line operator-linebreak
         const temporaryWaitingPlayer = (this.dealer + i) % this.playerSize
         if (!this.players[temporaryWaitingPlayer].hasFolded) {
-          this.lastPlayerInTurn = this.dealer
-          // TODO deve essere il giocatore prima del waiting player,
-          // TODO che è il dealer se non ha foldato.
+          for (let idx = 0; idx < this.playerSize; idx += 1) {
+            const lastPlayerInTurn = (this.dealer + this.playerSize - idx) % this.playerSize
+            if (!this.players[lastPlayerInTurn].hasFolded) {
+              this.lastPlayerInTurn = lastPlayerInTurn
+              break
+            }
+          }
           this.waitingPlayer = temporaryWaitingPlayer
           return WaitingState(
             this.id,
