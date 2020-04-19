@@ -38,6 +38,12 @@ test("I cannot bet on the game, if it's not my turn", () => {
   expect(errorState.message).toBe("You cannot !raise because it's not your turn")
 })
 
+test("I cannot bet on the game, if I don't have the money", () => {
+  const errorState = game.raise(1000, user)
+  expect(errorState.room).toBe('id')
+  expect(errorState.message).toBe('You cannot !raise because you only have 100')
+})
+
 test("I cannot bet on the game, if it's lower than bet", () => {
   const errorState = game.raise(5, user)
   expect(errorState.room).toBe('id')

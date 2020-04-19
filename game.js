@@ -230,6 +230,12 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
     raise(amount, user) {
       return this.pokerAction(user, 'raise', () => {
         const currentPlayer = this.lookupPlayer(user)
+        if (amount > currentPlayer.money) {
+          return ErrorState(
+            user.id,
+            `You cannot !raise because you only have ${currentPlayer.money}`
+          )
+        }
         if (amount < this.highestBet + this.bigBlind) {
           return ErrorState(
             user.id,
