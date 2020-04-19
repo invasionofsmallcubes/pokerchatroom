@@ -247,6 +247,7 @@ function Game(owner, id, deck, winnerCalculator, timePassed) {
         currentPlayer.money -= amount
         currentPlayer.bet += amount
         this.poolPrize += amount
+        this.highestBet = amount
         for (let idx = 1; idx < this.playerSize; idx += 1) {
           const lastPlayerInTurn = (this.waitingPlayer + this.playerSize - idx) % this.playerSize
           if (!this.players[lastPlayerInTurn].hasFolded) {

@@ -61,6 +61,7 @@ test("I can bet on the game, if it's my turn", () => {
   expect(game.lookupPlayer(user).bet).toBe(amount)
   expect(game.poolPrize).toBe(poolPrize)
   expect(game.lastPlayerInTurn).toBe(2)
+  expect(game.highestBet).toBe(20)
 
   const expectedState = RaiseState(
     user.name,
