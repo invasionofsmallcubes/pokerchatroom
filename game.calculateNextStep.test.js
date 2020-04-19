@@ -5,6 +5,7 @@ const Player = require('./player')
 const WaitingState = require('./waitingState')
 const NextState = require('./nextState')
 const CheckingState = require('./checkingState')
+const t = require('./testHelpers')
 
 const room = 'room'
 const user = User('name', room, 'id')
@@ -33,27 +34,8 @@ function aWinningStateNoFold(money, poolPrize) {
   })
 }
 
-const pokerDeck = function PokerDeck() {
-  return {
-    drawTwoCards() {
-      return ['1', '2']
-    },
-    drawThreeCards() {
-      return ['3', '4', '5']
-    },
-    drawOneCard() {
-      return '6'
-    },
-  }
-}
-
 beforeEach(() => {
-  const winnerCalculator = function WinnerCalculator() {
-    return {
-      calculateWinningPlayer: () => [{ playerId: 2 }],
-    }
-  }
-  game = Game(user, room, pokerDeck(), winnerCalculator())
+  game = Game(user, room, t.PokerDeck(), t.WinnerCalculator2())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

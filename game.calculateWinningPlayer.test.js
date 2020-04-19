@@ -1,39 +1,19 @@
 const Game = require('./game')
 const User = require('./user')
 const CardExamination = require('./cardExamination')
+const t = require('./testHelpers')
 
 const room = 'room'
 const user = User('name', room, 'id')
 const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
 
-const winnerCalculator = function WinnerCalculator() {
-  return {
-    // eslint-disable-next-line no-unused-vars
-    calculateWinningPlayer: jest.fn((cardsExaminations) => [{ playerId: 2 }]),
-  }
-}
-
-const pokerDeck = function PokerDeck() {
-  return {
-    drawTwoCards() {
-      return ['1', '2']
-    },
-    drawThreeCards() {
-      return ['3', '4', '5']
-    },
-    drawOneCard() {
-      return '6'
-    },
-  }
-}
-
 let game
 
-const winCalc = winnerCalculator()
+const winCalc = t.WinnerCalculator2()
 
 beforeEach(() => {
-  game = Game(user, room, pokerDeck(), winCalc)
+  game = Game(user, room, t.PokerDeck(), winCalc)
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

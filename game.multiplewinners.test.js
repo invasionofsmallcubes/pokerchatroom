@@ -1,24 +1,11 @@
 const Game = require('./game')
 const User = require('./user')
+const t = require('./testHelpers')
 
 const room = 'room'
 const user = User('name', room, 'id')
 const user2 = User('name2', room, 'id2')
 const user3 = User('name3', room, 'id3')
-
-const pokerDeck = function PokerDeck() {
-  return {
-    drawTwoCards() {
-      return ['1', '2']
-    },
-    drawThreeCards() {
-      return ['3', '4', '5']
-    },
-    drawOneCard() {
-      return '6'
-    },
-  }
-}
 
 let game
 
@@ -28,7 +15,7 @@ beforeEach(() => {
       calculateWinningPlayer: () => [{ playerId: 2 }, { playerId: 1 }],
     }
   }
-  game = Game(user, room, pokerDeck(), winnerCalculator())
+  game = Game(user, room, t.PokerDeck(), winnerCalculator())
   game.addPlayer(user)
   game.addPlayer(user2)
   game.addPlayer(user3)

@@ -1,20 +1,6 @@
 const CallState = require('./callState')
 const WaitingState = require('./waitingState')
-
-function Chat() {
-  return {
-    // eslint-disable-next-line no-unused-vars
-    gameExceptSender: jest.fn((roomName, message) => {}),
-    // eslint-disable-next-line no-unused-vars
-    game: jest.fn((roomName, message) => {}),
-    // eslint-disable-next-line no-unused-vars
-    toSelf: jest.fn((id, message) => {}),
-    // eslint-disable-next-line no-unused-vars
-    toSelfInTopic: jest.fn((id, message, topic) => {}),
-    // eslint-disable-next-line no-unused-vars
-    toRoomInTopic: jest.fn((room, message, topic) => {}),
-  }
-}
+const t = require('./testHelpers')
 
 test('I can print the message', () => {
   const room = 'room'
@@ -22,7 +8,9 @@ test('I can print the message', () => {
     money: 33,
     id: 'id2',
   })
-  const chat = Chat()
+
+  const chat = t.Chat()
+
   callState.print(chat)
   expect(chat.game.mock.calls.length).toBe(3)
   expect(chat.game.mock.calls[0][0]).toBe('room')
