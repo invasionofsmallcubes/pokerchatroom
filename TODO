@@ -1,5 +1,6 @@
 # Stuff to do:
   ☐ block betting after win and before reset
+  ☐ https://khalilstemmler.com/blogs/typescript/node-starter-project/
   ☐ plan next round
   ✔ manually setup small and big blind @done(20-04-14 19:53)
   ☐ move betting inside player
